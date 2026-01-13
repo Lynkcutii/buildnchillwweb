@@ -1,0 +1,226 @@
+/* --- 1. CAROUSEL CONTAINER --- */
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  height: 500px; /* Chiều cao banner cố định trên PC */
+  overflow: hidden;
+  background: #000;
+  border-bottom: 3px solid var(--tet-gold);
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ảnh luôn lấp đầy khung hình */
+  object-position: center;
+  display: block;
+  /* Thuộc tính giúp ảnh sắc nét hơn */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
+}
+
+/* --- 2. CAROUSEL BUTTONS (FIX THEO FILE GỐC) --- */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000 !important; /* Đè lên tất cả */
+
+  /* Màu sắc Theme Tết */
+  background: rgba(215, 0, 24, 0.6);
+  border: 2px solid #ffd700;
+  color: #ffd700;
+
+  /* QUAN TRỌNG: Phải có min-width/height để không bị bóp méo */
+  width: 60px !important;
+  height: 60px !important;
+  min-width: 60px !important;
+  min-height: 60px !important;
+
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  padding: 0 !important;
+  margin: 0 !important;
+
+  /* Reset các thuộc tính vị trí thừa */
+  inset: auto !important;
+}
+
+.carousel-btn svg {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+
+/* Hiệu ứng Hover */
+.carousel-btn:hover {
+  background: #d70018;
+  border-color: #fff;
+  color: #fff;
+  transform: translateY(-50%) scale(1.15);
+  box-shadow: 0 0 15px #ffd700;
+}
+
+/* Vị trí cụ thể */
+.carousel-btn-prev {
+  left: 30px !important;
+  right: auto !important;
+}
+
+.carousel-btn-next {
+  right: 30px !important;
+  left: auto !important;
+}
+
+/* --- 3. RESPONSIVE CAROUSEL (Mobile & Tablet) --- */
+@media (max-width: 1024px) {
+  .hero-carousel {
+    height: 400px; /* Chiều cao cho máy tính bảng */
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-carousel {
+    height: 250px; /* Chiều cao cho điện thoại */
+  }
+
+  .carousel-btn {
+    /* Thu nhỏ trên điện thoại */
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-width: 1px;
+  }
+
+  .carousel-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .carousel-btn-prev {
+    left: 10px !important;
+  }
+  .carousel-btn-next {
+    right: 10px !important;
+  }
+}
+
+/* --- 4. BURGER MENU (Xử lý nút 3 gạch) --- */
+
+/* Mặc định trên PC (Màn to hơn 992px): Ẩn nút Burger */
+.navbar-toggler,
+.burger-menu,
+button[aria-label="Toggle navigation"] {
+  display: none !important;
+}
+
+/* Trên Mobile/Tablet (Màn nhỏ hơn hoặc bằng 992px): Hiện nút Burger */
+@media (max-width: 992px) {
+  .navbar-toggler,
+  .burger-menu,
+  button[aria-label="Toggle navigation"] {
+    display: block !important; /* Hoặc flex tùy ông */
+    color: #ffd700 !important; /* Màu vàng cho hợp Tết */
+    border-color: #ffd700 !important;
+  }
+
+  /* Nếu ông muốn đổi màu icon 3 gạch */
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 215, 0, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  }
+}
+/* --- SỬA LỖI NÚT CAROUSEL --- */
+
+/* 1. Định vị chuẩn cho cả 2 nút */
+.carousel-btn {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 9999 !important; /* Đè lên tất cả */
+
+  /* Kích thước cố định để không bị méo */
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  /* Màu sắc nổi bật để dễ nhìn thấy (sửa lại sau nếu muốn) */
+  background-color: rgba(215, 0, 24, 0.8) !important; /* Đỏ */
+  border: 2px solid #ffd700 !important; /* Vàng */
+  color: #ffd700 !important;
+
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 2. Cài đặt riêng cho Nút TRÁI (Prev) */
+.carousel-btn-prev {
+  left: 20px !important; /* Cách lề trái 20px */
+  right: auto !important; /* Hủy bỏ lề phải */
+}
+
+/* 3. Cài đặt riêng cho Nút PHẢI (Next) - QUAN TRỌNG */
+.carousel-btn-next {
+  right: 20px !important; /* Cách lề phải 20px */
+  left: auto !important; /* BẮT BUỘC: Hủy bỏ lề trái để nó không bị dính sang trái */
+}
+
+/* 4. Sửa icon bên trong cho nó căn giữa đẹp */
+.carousel-btn svg {
+  width: 28px !important;
+  height: 28px !important;
+  display: block !important;
+}
+
+/* 5. Hiệu ứng khi di chuột */
+.carousel-btn:hover {
+  background-color: #ffd700 !important;
+  color: #d70018 !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* --- MOBILE: Thu nhỏ lại chút --- */
+@media (max-width: 768px) {
+  .carousel-btn {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+
+  .carousel-btn-prev {
+    left: 10px !important;
+  }
+  .carousel-btn-next {
+    right: 10px !important;
+  }
+}

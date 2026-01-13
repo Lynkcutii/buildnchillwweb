@@ -1,0 +1,21 @@
+# ============================================
+# MINECRAFT SHOP PLUGIN - CONFIG
+# ============================================
+
+# Supabase Configuration
+supabase:
+  # URL Supabase project (lấy từ Supabase Dashboard > Settings > API)
+  url: "https://your-project.supabase.co"
+
+  # Anon key (lấy từ Supabase Dashboard > Settings > API)
+  anon_key: "your-anon-key"
+
+# Polling Configuration
+poll:
+  # Khoảng thời gian giữa các lần poll (giây)
+  # Khuyến nghị: 10-20 giây
+  interval_seconds: 15
+
+# Discord Webhook (Dùng để cập nhật trạng thái đơn hàng sang màu xanh lá)
+discord:
+  webhook_url: "https://discord.com/api/webhooks/..."

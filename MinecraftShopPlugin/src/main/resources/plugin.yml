@@ -1,0 +1,6 @@
+name: MinecraftShopPlugin
+version: 1.0.0
+main: com.buildnchill.shop.MinecraftShopPlugin
+api-version: 1.20
+author: BuildnChill
+description: Plugin tự động xử lý orders từ Supabase và thực thi commands trong game
