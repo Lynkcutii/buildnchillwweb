@@ -66,13 +66,6 @@ Chạy các scripts migration theo thứ tự:
 npm run dev
 ```
 
----
-
-## 🔐 Truy Cập Quản Trị
-- **Đường dẫn**: `/login` -> `/admin`
-- **Tài khoản mặc định**: `BuildnChill-Admin`
-- **Mật khẩu**: `buildnchill2026!`
-
 ## 📁 Cấu Trúc Thư Mục Chính
 ```text
 src/
