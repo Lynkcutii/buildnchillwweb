@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { DataProvider, useData } from './context/DataContext';
 import TopBar from './components/TopBar';
 import Navbar from './components/Navbar';
@@ -23,12 +24,6 @@ import './styles/tet-theme.css';
 
 const AppContent = () => {
   const { isAuthenticated, siteSettings } = useData();
-
-  useEffect(() => {
-    if (siteSettings?.site_title) {
-      document.title = siteSettings.site_title;
-    }
-  }, [siteSettings?.site_title]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -178,11 +173,13 @@ const AppContent = () => {
 
 function App() {
   return (
-    <DataProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </DataProvider>
+    <HelmetProvider>
+      <DataProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </DataProvider>
+    </HelmetProvider>
   );
 }
 

@@ -106,7 +106,7 @@ const Contact = () => {
   return (
     <div className="shop-tet-container">
       <Helmet>
-        <title>Liên Hệ Hỗ Trợ - BuildnChill Minecraft</title>
+        <title>Liên Hệ - BuildnChill</title>
         <meta name="description" content="Bạn cần hỗ trợ? Gửi yêu cầu báo lỗi, góp ý hoặc báo cáo người chơi tại trang liên hệ của BuildnChill." />
         <meta property="og:title" content="Liên Hệ Hỗ Trợ - BuildnChill" />
         <meta property="og:description" content="Đội ngũ hỗ trợ của BuildnChill luôn sẵn sàng giải đáp thắc mắc của bạn." />

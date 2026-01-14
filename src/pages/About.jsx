@@ -36,7 +36,7 @@ const About = () => {
   return (
     <div className="shop-tet-container">
       <Helmet>
-        <title>Giới Thiệu BuildnChill - Cộng Đồng Minecraft Việt Nam</title>
+        <title>Giới Thiệu - BuildnChill</title>
         <meta name="description" content="Tìm hiểu về BuildnChill, một cộng đồng Minecraft thân thiện, sáng tạo và luôn chào đón mọi người chơi." />
         <meta property="og:title" content="Giới Thiệu BuildnChill" />
         <meta property="og:description" content="Khám phá giá trị cốt lõi và những gì BuildnChill mang lại cho cộng đồng Minecraft Việt Nam." />

@@ -981,17 +981,15 @@ body {
   margin-bottom: 0.625rem;
   line-height: 1.5;
 }
-
 /* Paragraphs - Style đẹp cho đoạn văn */
 .news-content p {
   color: var(--text-secondary);
-  margin-bottom: 1.5rem;
   font-size: 1.1rem;
   line-height: 1.8;
   text-align: justify;
   word-wrap: break-word;
+  margin-bottom: 0 !important;
 }
-
 /* Images - Căn giữa và kích thước cố định */
 .news-content img {
   display: block;

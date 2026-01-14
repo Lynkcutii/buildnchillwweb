@@ -34,7 +34,7 @@ const NewsDetail = () => {
   return (
     <div className="shop-tet-container">
       <Helmet>
-        <title>{post.title} - BuildnChill News</title>
+        <title>{post.title} - BuildnChill</title>
         <meta name="description" content={post.description || post.title} />
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.description} />

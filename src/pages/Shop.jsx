@@ -272,7 +272,7 @@ const Shop = () => {
   return (
     <div className="shop-tet-container">
       <Helmet>
-        <title>Cửa Hàng Minecraft - BuildnChill | Vật Phẩm, Rank, Xu</title>
+        <title>Cửa Hàng Minecraft - BuildnChill</title>
         <meta name="description" content="Mua sắm vật phẩm Minecraft, Rank, Xu và nhiều gói quà hấp dẫn tại BuildnChill Shop. Thanh toán nhanh chóng, nhận quà tức thì." />
         <meta property="og:title" content="Cửa Hàng Minecraft - BuildnChill Shop" />
         <meta property="og:description" content="Nâng cấp trải nghiệm chơi game của bạn với các vật phẩm độc quyền tại BuildnChill." />

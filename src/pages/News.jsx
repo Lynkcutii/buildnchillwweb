@@ -62,7 +62,7 @@ const News = () => {
   return (
     <div className="shop-tet-container">
       <Helmet>
-        <title>Tin Tức & Sự Kiện - BuildnChill Minecraft</title>
+        <title>Tin Tức - BuildnChill</title>
         <meta name="description" content="Cập nhật những tin tức mới nhất, sự kiện hấp dẫn và các bản cập nhật quan trọng từ máy chủ Minecraft BuildnChill." />
         <meta property="og:title" content="Tin Tức & Sự Kiện - BuildnChill" />
         <meta property="og:description" content="Đừng bỏ lỡ các thông tin quan trọng về cộng đồng Minecraft BuildnChill." />

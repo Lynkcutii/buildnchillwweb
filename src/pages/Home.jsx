@@ -63,9 +63,9 @@ const Home = () => {
   return (
     <div className="shop-tet-container">
       <Helmet>
-        <title>{siteTitle} - Server Minecraft Việt Nam | {serverIp}</title>
+        <title>BuildnChill - Máy Chủ Minecraft Cộng Đồng Việt Nam</title>
         <meta name="description" content={`Chào mừng bạn đến với ${siteTitle}. Server Minecraft Việt Nam chất lượng với cộng đồng năng động, sự kiện thường xuyên và hỗ trợ 24/7. Tham gia ngay tại ${serverIp}`} />
-        <meta property="og:title" content={`${siteTitle} - Server Minecraft Việt Nam`} />
+        <meta property="og:title" content="BuildnChill - Máy Chủ Minecraft Cộng Đồng Việt Nam" />
         <meta property="og:description" content={`Tham gia cộng đồng Minecraft lớn mạnh nhất tại ${serverIp}. Nhiều chế độ chơi hấp dẫn đang chờ bạn!`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.buildnchill.id.vn" />
