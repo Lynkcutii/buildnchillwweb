@@ -11,6 +11,11 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://www.buildnchill.id.vn/news</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
     <loc>https://www.buildnchill.id.vn/contact</loc>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
