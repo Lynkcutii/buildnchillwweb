@@ -57,6 +57,8 @@ const Admin = () => {
     date: new Date().toISOString().split('T')[0],
     description: ''
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [serverForm, setServerForm] = useState({
     status: 'Online',
     players: '',
@@ -237,6 +239,58 @@ const Admin = () => {
     setSettingsForm({ ...settingsForm, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Vui lòng chọn file ảnh!');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Kích thước ảnh tối đa 10MB!');
+        return;
+      }
+      setImageFile(file);
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!imageFile) return formData.image;
+
+    try {
+      setUploading(true);
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+      const filePath = fileName;
+
+      const { error: uploadError } = await supabase.storage
+        .from('news')
+        .upload(filePath, imageFile, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) {
+        // Nếu lỗi do chưa có bucket, thử dùng bucket khác hoặc báo lỗi
+        console.error('Error uploading image to news bucket:', uploadError);
+        // Fallback sang contact-images nếu cần, hoặc thông báo
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('news')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Lỗi khi tải ảnh lên: ' + error.message);
+      return formData.image;
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSettingsSave = async () => {
     try {
       const success = await updateSiteSettings(settingsForm);
@@ -248,25 +302,30 @@ const Admin = () => {
 
   const handleAddNew = () => {
     setEditingPost(null);
+    setImageFile(null);
     setFormData({ title: '', content: '', image: '', date: new Date().toISOString().split('T')[0], description: '' });
     setShowModal(true);
   };
 
   const handleEdit = (post) => {
     setEditingPost(post);
+    setImageFile(null);
     setFormData({ title: post.title, content: post.content, image: post.image, date: post.date, description: post.description });
     setShowModal(true);
   };
 
   const handleSave = async () => {
     try {
+      const finalImageUrl = await uploadImage();
+      const finalFormData = { ...formData, image: finalImageUrl };
+
       if (editingPost) {
-        const updatedPost = { ...editingPost, ...formData };
+        const updatedPost = { ...editingPost, ...finalFormData };
         const success = await updateNews(editingPost.id, updatedPost);
-        if (success) { setShowModal(false); setEditingPost(null); }
+        if (success) { setShowModal(false); setEditingPost(null); setImageFile(null); }
       } else {
-        const success = await addNews(formData);
-        if (success) { setShowModal(false); setEditingPost(null); }
+        const success = await addNews(finalFormData);
+        if (success) { setShowModal(false); setEditingPost(null); setImageFile(null); }
       }
     } catch (error) {
       console.error('Error saving news:', error);
@@ -801,8 +860,23 @@ const Admin = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-6 mb-3">
-                    <label className="tet-label">Ảnh bìa (URL)</label>
-                    <input type="text" className="tet-input w-100" name="image" value={formData.image} onChange={handleInputChange} placeholder="Link ảnh..." />
+                    <label className="tet-label">Ảnh bìa</label>
+                    <div className="d-flex gap-2 align-items-center mb-2">
+                      {formData.image && !imageFile && (
+                        <img src={formData.image} alt="Preview" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                      )}
+                      {imageFile && (
+                        <img src={URL.createObjectURL(imageFile)} alt="Preview" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--tet-gold)' }} />
+                      )}
+                      <input 
+                        type="file" 
+                        className="tet-input flex-grow-1" 
+                        accept="image/*" 
+                        onChange={handleImageChange}
+                      />
+                    </div>
+                    <small className="text-muted d-block mb-2">Tải ảnh lên (Tối đa 10MB)</small>
+                    <input type="text" className="tet-input w-100" name="image" value={formData.image} onChange={handleInputChange} placeholder="Hoặc dán link ảnh..." />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label className="tet-label">Ngày đăng</label>
@@ -832,8 +906,9 @@ const Admin = () => {
                   whileTap={{ scale: 0.95 }}
                   className="tet-button-save"
                   onClick={handleSave}
+                  disabled={uploading}
                 >
-                  <BiCheck size={20} /> Lưu bài viết
+                  <BiCheck size={20} /> {uploading ? 'Đang tải ảnh...' : 'Lưu bài viết'}
                 </motion.button>
               </div>
             </div>

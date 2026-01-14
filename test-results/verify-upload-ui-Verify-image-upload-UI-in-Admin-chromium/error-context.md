@@ -1,0 +1,219 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - img [ref=e9]
+        - link "0373796601" [ref=e11] [cursor=pointer]:
+          - /url: tel:0373796601
+      - generic [ref=e12]:
+        - img [ref=e13]
+        - link "apphoang2004@gmail.com" [ref=e15] [cursor=pointer]:
+          - /url: mailto:apphoang2004@gmail.com
+    - generic [ref=e16]:
+      - generic [ref=e17] [cursor=pointer]:
+        - img [ref=e18]
+        - text: buildnchill.id.vn
+      - link "Tham Gia Discord" [ref=e21] [cursor=pointer]:
+        - /url: https://discord.gg/YHnGXXR9rE
+        - img [ref=e22]
+        - text: Tham Gia Discord
+  - navigation [ref=e24]:
+    - generic [ref=e25]:
+      - link "BuildnChill" [ref=e26] [cursor=pointer]:
+        - /url: /
+      - list [ref=e28]:
+        - listitem [ref=e29]:
+          - link "Trang Chủ" [ref=e30] [cursor=pointer]:
+            - /url: /
+            - img [ref=e31]
+            - text: Trang Chủ
+        - listitem [ref=e33]:
+          - link "Giới Thiệu" [ref=e34] [cursor=pointer]:
+            - /url: /about
+            - img [ref=e35]
+            - text: Giới Thiệu
+        - listitem [ref=e38]:
+          - link "Tin Tức" [ref=e39] [cursor=pointer]:
+            - /url: /news
+            - img [ref=e40]
+            - text: Tin Tức
+        - listitem [ref=e43]:
+          - link "Cửa Hàng" [ref=e44] [cursor=pointer]:
+            - /url: /shop
+            - img [ref=e45]
+            - text: Cửa Hàng
+        - listitem [ref=e47]:
+          - link "Liên Hệ" [ref=e48] [cursor=pointer]:
+            - /url: /contact
+            - img [ref=e49]
+            - text: Liên Hệ
+        - listitem [ref=e51]:
+          - link "Quản Trị" [ref=e52] [cursor=pointer]:
+            - /url: /admin
+            - img [ref=e53]
+            - text: Quản Trị
+  - main [ref=e55]:
+    - generic [ref=e58]:
+      - generic [ref=e59]:
+        - heading "BuildnChill Admin" [level=4] [ref=e61]
+        - navigation [ref=e62]:
+          - button "Bảng Điều Khiển" [ref=e63] [cursor=pointer]:
+            - img [ref=e64]
+            - text: Bảng Điều Khiển
+          - button "Danh Mục" [ref=e66] [cursor=pointer]:
+            - img [ref=e67]
+            - text: Danh Mục
+          - button "Sản Phẩm" [ref=e70] [cursor=pointer]:
+            - img [ref=e71]
+            - text: Sản Phẩm
+          - button "Đơn Hàng" [ref=e73] [cursor=pointer]:
+            - img [ref=e74]
+            - text: Đơn Hàng
+          - button "Tin Tức" [ref=e77] [cursor=pointer]:
+            - img [ref=e78]
+            - text: Tin Tức
+          - button "Liên Hệ" [ref=e81] [cursor=pointer]:
+            - img [ref=e82]
+            - text: Liên Hệ
+          - button "Trạng Thái Server" [ref=e84] [cursor=pointer]:
+            - img [ref=e85]
+            - text: Trạng Thái Server
+          - button "Cài Đặt" [ref=e88] [cursor=pointer]:
+            - img [ref=e89]
+            - text: Cài Đặt
+        - button "Đăng Xuất" [ref=e93] [cursor=pointer]:
+          - img [ref=e94]
+          - text: Đăng Xuất
+      - generic [ref=e98]:
+        - generic [ref=e99]:
+          - heading "🐴 Bảng Điều Khiển 🐴" [level=1] [ref=e100]
+          - button "Làm mới" [ref=e101] [cursor=pointer]:
+            - img [ref=e102]
+            - text: Làm mới
+        - generic [ref=e105]:
+          - generic [ref=e109]:
+            - heading "0" [level=3] [ref=e110]
+            - paragraph [ref=e111]: Đơn Chờ Giao
+            - text: Đã thanh toán
+          - generic [ref=e115]:
+            - heading "0 VNĐ" [level=3] [ref=e116]
+            - paragraph [ref=e117]: Doanh Thu Tháng
+            - generic [ref=e118]: 0 đơn
+          - generic [ref=e122]:
+            - heading "0 VNĐ" [level=3] [ref=e123]
+            - paragraph [ref=e124]: Doanh Thu Năm
+            - generic [ref=e125]: 0 đơn
+          - generic [ref=e129]:
+            - heading "0 VNĐ" [level=3] [ref=e130]
+            - paragraph [ref=e131]: Tổng Doanh Thu
+            - text: Tất cả thời gian
+          - generic [ref=e135]:
+            - heading "1" [level=3] [ref=e136]
+            - paragraph [ref=e137]: Online
+            - text: Người chơi
+        - generic [ref=e138]:
+          - generic [ref=e140]:
+            - heading "Doanh Thu 7 Ngày Gần Nhất" [level=5] [ref=e141]
+            - generic [ref=e142]:
+              - generic [ref=e144]: 08-01
+              - generic [ref=e146]: 09-01
+              - generic [ref=e148]: 10-01
+              - generic [ref=e150]: 11-01
+              - generic [ref=e152]: 12-01
+              - generic [ref=e154]: 13-01
+              - generic [ref=e156]: 14-01
+          - generic [ref=e157]:
+            - generic [ref=e158]:
+              - heading "Top Nạp" [level=5] [ref=e159]
+              - generic [ref=e161]: Chưa có dữ liệu
+            - heading "Sản phẩm bán chạy" [level=5] [ref=e163]
+            - generic [ref=e164]:
+              - heading "Tổng Quan Khác" [level=5] [ref=e165]
+              - generic [ref=e166]:
+                - generic [ref=e167]:
+                  - generic [ref=e168]: Bài viết tin tức
+                  - generic [ref=e169]: "1"
+                - generic [ref=e170]:
+                  - generic [ref=e171]: Liên hệ mới
+                  - generic [ref=e172]: "0"
+                - generic [ref=e173]:
+                  - generic [ref=e174]: Liên hệ chờ xử lý
+                  - generic [ref=e175]: "0"
+        - generic [ref=e176]:
+          - generic [ref=e178]:
+            - heading "Đơn Hàng Gần Đây" [level=5] [ref=e179]
+            - table [ref=e181]:
+              - rowgroup [ref=e182]:
+                - row "Mã IGN Sản phẩm Trạng thái" [ref=e183]:
+                  - columnheader "Mã" [ref=e184]
+                  - columnheader "IGN" [ref=e185]
+                  - columnheader "Sản phẩm" [ref=e186]
+                  - columnheader "Trạng thái" [ref=e187]
+              - rowgroup
+            - button "Xem tất cả đơn hàng →" [ref=e188] [cursor=pointer]
+          - generic [ref=e190]:
+            - heading "Tin Nhắn Mới" [level=5] [ref=e191]
+            - generic [ref=e193]:
+              - generic [ref=e194]:
+                - heading "LH-25 - T_Dev29" [level=6] [ref=e195]
+                - generic [ref=e196]: 10/1/2026
+              - paragraph [ref=e197]: Trợ Giúp (Help)
+            - button "Xem tất cả tin nhắn →" [ref=e198] [cursor=pointer]
+  - contentinfo [ref=e199]:
+    - generic [ref=e200]:
+      - generic [ref=e201]:
+        - generic [ref=e202]:
+          - heading "BuildnChill" [level=5] [ref=e203]
+          - paragraph [ref=e204]: Server Minecraft cộng đồng thân thiện của chúng tôi. Xây dựng, khám phá và thư giãn cùng chúng tôi! Tham gia cộng đồng sôi động và trải nghiệm gameplay Minecraft tuyệt vời nhất.
+          - link "Discord" [ref=e206] [cursor=pointer]:
+            - /url: https://discord.gg/YHnGXXR9rE
+            - img [ref=e207]
+        - generic [ref=e209]:
+          - heading "Liên Kết Nhanh" [level=5] [ref=e210]
+          - list [ref=e211]:
+            - listitem [ref=e212]:
+              - link "Trang Chủ" [ref=e213] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e214]:
+              - link "Giới Thiệu" [ref=e215] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e216]:
+              - link "Tin Tức" [ref=e217] [cursor=pointer]:
+                - /url: /news
+            - listitem [ref=e218]:
+              - link "Cửa Hàng" [ref=e219] [cursor=pointer]:
+                - /url: /shop
+            - listitem [ref=e220]:
+              - link "Liên Hệ" [ref=e221] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=e222]:
+          - heading "Thông Tin Server" [level=5] [ref=e223]
+          - list [ref=e224]:
+            - listitem [ref=e225]:
+              - strong [ref=e226]: "IP:"
+              - text: buildnchill.id.vn
+            - listitem [ref=e227]:
+              - strong [ref=e228]: "Phiên Bản:"
+              - text: Paper 1.21.10
+            - listitem [ref=e229]:
+              - strong [ref=e230]: "Trạng Thái:"
+              - text: 🟢 Đang Hoạt Động
+        - generic [ref=e231]:
+          - heading "Liên Hệ" [level=5] [ref=e232]
+          - list [ref=e233]:
+            - listitem [ref=e234]:
+              - strong [ref=e235]: "Email:"
+              - link "apphoang2004@gmail.com" [ref=e236] [cursor=pointer]:
+                - /url: mailto:apphoang2004@gmail.com
+            - listitem [ref=e237]:
+              - strong [ref=e238]: "Số Điện Thoại:"
+              - link "0373796601" [ref=e239] [cursor=pointer]:
+                - /url: tel:0373796601
+      - separator [ref=e240]
+      - generic [ref=e241]:
+        - paragraph [ref=e242]: © 2026 BuildnChill. All rights reserved.🧧 Chúc mừng năm mới Bính Ngọ 2026! 🌸
+        - generic [ref=e243]: Website được thiết kế và quản lý bởi T-Dev29
+```

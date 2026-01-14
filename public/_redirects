@@ -1,4 +1,0 @@
-# Cấu hình Netlify: Ưu tiên file tĩnh, còn lại trỏ về index.html cho React Router
-/sitemap.xml  /sitemap.xml  200
-/robots.txt   /robots.txt   200
-/*            /index.html   200

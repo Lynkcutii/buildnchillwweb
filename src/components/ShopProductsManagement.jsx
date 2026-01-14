@@ -288,24 +288,21 @@ const ShopProductsManagement = () => {
               </div>
               <div className="mb-3">
                 <label className="tet-label">Hình Ảnh Sản Phẩm</label>
-                <div className="d-flex gap-3 align-items-start">
+                <div className="d-flex gap-3 align-items-center mb-2">
                   {formData.image_url && !imageFile && (
-                    <img src={formData.image_url} alt="Preview" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />
+                    <img src={formData.image_url} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--tet-gold)' }} />
                   )}
                   {imageFile && (
-                    <div className="position-relative">
-                      <img src={URL.createObjectURL(imageFile)} alt="Preview" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '2px solid var(--tet-lucky-red)' }} />
-                      <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: 'white', fontSize: '0.7rem' }}>Mới</div>
-                    </div>
+                    <img src={URL.createObjectURL(imageFile)} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '2px solid var(--tet-lucky-red)' }} />
                   )}
-                  <div className="flex-grow-1">
-                    <input type="file" className="tet-input" accept="image/*" onChange={handleImageChange} />
-                    <small className="text-muted">Tải ảnh lên từ thiết bị (Max 10MB). Hoặc để trống nếu dùng ảnh cũ.</small>
-                  </div>
+                  <input 
+                    type="file" 
+                    className="tet-input flex-grow-1" 
+                    accept="image/*" 
+                    onChange={handleImageChange} 
+                  />
                 </div>
-              </div>
-              <div className="mb-3">
-                <label className="tet-label">URL Hình Ảnh</label>
+                <small className="text-muted d-block mb-2">Tải ảnh lên (Tối đa 10MB). Hoặc nhập URL bên dưới.</small>
                 <input type="url" className="tet-input" value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} placeholder="https://..." />
               </div>
               <div className="row">

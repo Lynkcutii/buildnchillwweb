@@ -14,6 +14,8 @@ const ShopCategoriesManagement = () => {
     display_order: 0,
     active: true
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     loadCategories();
@@ -36,6 +38,7 @@ const ShopCategoriesManagement = () => {
 
   const handleAddNew = () => {
     setEditingCategory(null);
+    setImageFile(null);
     setFormData({
       name: '',
       description: '',
@@ -48,6 +51,7 @@ const ShopCategoriesManagement = () => {
 
   const handleEdit = (category) => {
     setEditingCategory(category);
+    setImageFile(null);
     setFormData({
       name: category.name,
       description: category.description || '',
@@ -56,6 +60,53 @@ const ShopCategoriesManagement = () => {
       active: category.active !== false
     });
     setShowModal(true);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Vui lòng chọn file ảnh!');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Kích thước ảnh tối đa 10MB!');
+        return;
+      }
+      setImageFile(file);
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!imageFile) return formData.icon;
+
+    try {
+      setUploading(true);
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+      const filePath = fileName;
+
+      const { error: uploadError } = await supabase.storage
+        .from('categories')
+        .upload(filePath, imageFile, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('categories')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Lỗi khi tải ảnh lên: ' + error.message);
+      return formData.icon;
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -76,16 +127,19 @@ const ShopCategoriesManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const finalIconUrl = await uploadImage();
+      const finalFormData = { ...formData, icon: finalIconUrl };
+
       if (editingCategory) {
         const { error } = await supabase
           .from('categories')
-          .update(formData)
+          .update(finalFormData)
           .eq('id', editingCategory.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('categories')
-          .insert([formData]);
+          .insert([finalFormData]);
         if (error) throw error;
       }
       setShowModal(false);
@@ -126,7 +180,13 @@ const ShopCategoriesManagement = () => {
           <tbody>
             {categories.map(category => (
               <tr key={category.id}>
-                <td>{category.icon || '📦'}</td>
+                <td>
+                  {category.icon && (category.icon.startsWith('http') || category.icon.startsWith('/')) ? (
+                    <img src={category.icon} alt={category.name} style={{ width: '30px', height: '30px', objectFit: 'cover', borderRadius: '4px' }} />
+                  ) : (
+                    category.icon || '📦'
+                  )}
+                </td>
                 <td>{category.name}</td>
                 <td>{category.description || '-'}</td>
                 <td>{category.display_order}</td>
@@ -185,8 +245,29 @@ const ShopCategoriesManagement = () => {
                 <textarea className="tet-input" rows="3" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
               </div>
               <div className="mb-3">
-                <label className="tet-label">Icon (Emoji)</label>
-                <input type="text" className="tet-input" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} placeholder="📦" />
+                <label className="tet-label">Icon / Hình Ảnh</label>
+                <div className="d-flex gap-2 align-items-center mb-2">
+                  {formData.icon && !imageFile && (
+                    <div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.05)', borderRadius: '4px' }}>
+                      {(formData.icon.startsWith('http') || formData.icon.startsWith('/')) ? (
+                        <img src={formData.icon} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
+                      ) : (
+                        <span style={{ fontSize: '1.5rem' }}>{formData.icon}</span>
+                      )}
+                    </div>
+                  )}
+                  {imageFile && (
+                    <img src={URL.createObjectURL(imageFile)} alt="Preview" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--tet-gold)' }} />
+                  )}
+                  <input 
+                    type="file" 
+                    className="tet-input flex-grow-1" 
+                    accept="image/*" 
+                    onChange={handleImageChange}
+                  />
+                </div>
+                <small className="text-muted d-block mb-2">Tải ảnh lên (Tối đa 10MB) hoặc nhập Emoji/Link bên dưới</small>
+                <input type="text" className="tet-input" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} placeholder="📦 hoặc https://..." />
               </div>
               <div className="mb-3">
                 <label className="tet-label">Thứ Tự Hiển Thị</label>
@@ -199,9 +280,9 @@ const ShopCategoriesManagement = () => {
                 </label>
               </div>
               <div className="d-flex gap-2">
-                <motion.button type="submit" className="tet-button-save" whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(40, 167, 69, 0.4)' }} whileTap={{ scale: 0.95 }}>
+                <motion.button type="submit" className="tet-button-save" whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(40, 167, 69, 0.4)' }} whileTap={{ scale: 0.95 }} disabled={uploading}>
                   <BiCheck className="me-2" size={20} />
-                  Lưu danh mục
+                  {uploading ? 'Đang tải ảnh...' : 'Lưu danh mục'}
                 </motion.button>
                 <motion.button type="button" className="tet-button-outline" onClick={() => setShowModal(false)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <BiX className="me-2" size={20} />
