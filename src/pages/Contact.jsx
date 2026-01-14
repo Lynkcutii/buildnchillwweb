@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { BiUser, BiEnvelope, BiPhone, BiMessageSquare, BiSend, BiImageAdd, BiX } from 'react-icons/bi';
 import { useData } from '../context/DataContext';
 
@@ -104,6 +105,12 @@ const Contact = () => {
 
   return (
     <div className="shop-tet-container">
+      <Helmet>
+        <title>Liên Hệ Hỗ Trợ - BuildnChill Minecraft</title>
+        <meta name="description" content="Bạn cần hỗ trợ? Gửi yêu cầu báo lỗi, góp ý hoặc báo cáo người chơi tại trang liên hệ của BuildnChill." />
+        <meta property="og:title" content="Liên Hệ Hỗ Trợ - BuildnChill" />
+        <meta property="og:description" content="Đội ngũ hỗ trợ của BuildnChill luôn sẵn sàng giải đáp thắc mắc của bạn." />
+      </Helmet>
       <div className="container my-5">
         <motion.div
           className="row"

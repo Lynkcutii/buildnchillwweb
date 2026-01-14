@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { BiShoppingBag, BiUser, BiCheckCircle, BiXCircle, BiGift, BiQrScan, BiCreditCard, BiStar } from 'react-icons/bi';
 import { supabase } from '../supabaseClient';
 import TetEffect from '../components/TetEffect';
@@ -270,6 +271,14 @@ const Shop = () => {
 
   return (
     <div className="shop-tet-container">
+      <Helmet>
+        <title>Cửa Hàng Minecraft - BuildnChill | Vật Phẩm, Rank, Xu</title>
+        <meta name="description" content="Mua sắm vật phẩm Minecraft, Rank, Xu và nhiều gói quà hấp dẫn tại BuildnChill Shop. Thanh toán nhanh chóng, nhận quà tức thì." />
+        <meta property="og:title" content="Cửa Hàng Minecraft - BuildnChill Shop" />
+        <meta property="og:description" content="Nâng cấp trải nghiệm chơi game của bạn với các vật phẩm độc quyền tại BuildnChill." />
+        <meta property="og:image" content="https://foodtek.vn/sites/default/files/2025-12/462570011_607189315167864_5786208777291669050_n.webp" />
+        <meta name="keywords" content="shop minecraft, mua rank minecraft, nap xu minecraft, buildnchill shop" />
+      </Helmet>
       <TetEffect />
       <div className="container my-5">
         <motion.div

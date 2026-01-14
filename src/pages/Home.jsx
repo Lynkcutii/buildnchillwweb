@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { BiServer, BiUser, BiCalendar, BiTime, BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import '../styles/carousel.css';
 
@@ -10,54 +11,24 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const latestNews = news.slice(0, 3);
-
-  const carouselImages = [
-    'https://media.discordapp.net/attachments/1318780761880658030/1459010017905737759/Generated_Image_January_09_2026_-_9_21AM_LE_upscale_balanced.jpg?ex=6961b877&is=696066f7&hm=8575353526785f2d034385187431d268de58b412681a9904bce0564360fccc93&=&format=webp&width=743&height=291',
-    'https://foodtek.vn/sites/default/files/2025-12/462570011_607189315167864_5786208777291669050_n.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/467459402_525799813831572_2048064753693338637_n.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/467457844_1958845277932349_4464426894527163495_n.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/2025-02-17_21.42.55.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/6-3_01.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/2025-09-20_20.49.28.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/2025-12-19_23.28.20.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/2025-12-19_23.25.58.webp',
-    'https://foodtek.vn/sites/default/files/2025-12/17-915.webp'
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [carouselImages.length]);
-
-  const features = [
-    { icon: BiServer, title: 'Hoạt Động 24/7', description: 'Luôn online, luôn sẵn sàng' },
-    { icon: BiUser, title: 'Cộng Đồng Năng Động', description: 'Tham gia cùng hàng nghìn người chơi' },
-    { icon: BiTime, title: 'Sự Kiện Thường Xuyên', description: 'Cuộc thi hàng tuần và nhiều niềm vui' }
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 }
-    }
-  };
+  
+  const siteTitle = siteSettings?.site_title || 'BuildnChill';
+  const serverIp = siteSettings?.server_ip || 'play.buildnchill.com';
 
   return (
     <div className="shop-tet-container">
+      <Helmet>
+        <title>{siteTitle} - Server Minecraft Việt Nam | {serverIp}</title>
+        <meta name="description" content={`Chào mừng bạn đến với ${siteTitle}. Server Minecraft Việt Nam chất lượng với cộng đồng năng động, sự kiện thường xuyên và hỗ trợ 24/7. Tham gia ngay tại ${serverIp}`} />
+        <meta property="og:title" content={`${siteTitle} - Server Minecraft Việt Nam`} />
+        <meta property="og:description" content={`Tham gia cộng đồng Minecraft lớn mạnh nhất tại ${serverIp}. Nhiều chế độ chơi hấp dẫn đang chờ bạn!`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://buildnchill.com" />
+        <meta property="og:image" content="https://foodtek.vn/sites/default/files/2025-12/2025-12-19_23.28.20.webp" />
+        <meta name="keywords" content="minecraft, server minecraft, minecraft viet nam, buildnchill, play minecraft, minecraft 1.20.4" />
+      </Helmet>
+
+      {/* Carousel Section */}
       <section className="hero-carousel">
         <div className="carousel-container">
           <AnimatePresence mode="wait">
@@ -70,7 +41,18 @@ const Home = () => {
               transition={{ duration: 0.5 }}
             >
               <img
-                src={carouselImages[currentSlide]}
+                src={[
+                  'https://media.discordapp.net/attachments/1318780761880658030/1459010017905737759/Generated_Image_January_09_2026_-_9_21AM_LE_upscale_balanced.jpg?ex=6961b877&is=696066f7&hm=8575353526785f2d034385187431d268de58b412681a9904bce0564360fccc93&=&format=webp&width=743&height=291',
+                  'https://foodtek.vn/sites/default/files/2025-12/462570011_607189315167864_5786208777291669050_n.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/467459402_525799813831572_2048064753693338637_n.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/467457844_1958845277932349_4464426894527163495_n.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/2025-02-17_21.42.55.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/6-3_01.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/2025-09-20_20.49.28.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/2025-12-19_23.28.20.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/2025-12-19_23.25.58.webp',
+                  'https://foodtek.vn/sites/default/files/2025-12/17-915.webp'
+                ][currentSlide]}
                 alt={`Slide ${currentSlide + 1}`}
                 className="carousel-image"
               />

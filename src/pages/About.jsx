@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { BiServer, BiCube, BiGroup, BiTrophy, BiShield, BiHeart } from 'react-icons/bi';
 import { useData } from '../context/DataContext';
 
@@ -34,6 +35,12 @@ const About = () => {
 
   return (
     <div className="shop-tet-container">
+      <Helmet>
+        <title>Giới Thiệu BuildnChill - Cộng Đồng Minecraft Việt Nam</title>
+        <meta name="description" content="Tìm hiểu về BuildnChill, một cộng đồng Minecraft thân thiện, sáng tạo và luôn chào đón mọi người chơi." />
+        <meta property="og:title" content="Giới Thiệu BuildnChill" />
+        <meta property="og:description" content="Khám phá giá trị cốt lõi và những gì BuildnChill mang lại cho cộng đồng Minecraft Việt Nam." />
+      </Helmet>
       <div className="container my-5">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

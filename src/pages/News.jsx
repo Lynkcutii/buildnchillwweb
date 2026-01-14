@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { useData } from '../context/DataContext';
 import { BiSearch, BiCalendar } from 'react-icons/bi';
 
@@ -60,6 +61,14 @@ const News = () => {
 
   return (
     <div className="shop-tet-container">
+      <Helmet>
+        <title>Tin Tức & Sự Kiện - BuildnChill Minecraft</title>
+        <meta name="description" content="Cập nhật những tin tức mới nhất, sự kiện hấp dẫn và các bản cập nhật quan trọng từ máy chủ Minecraft BuildnChill." />
+        <meta property="og:title" content="Tin Tức & Sự Kiện - BuildnChill" />
+        <meta property="og:description" content="Đừng bỏ lỡ các thông tin quan trọng về cộng đồng Minecraft BuildnChill." />
+        <meta property="og:image" content="https://foodtek.vn/sites/default/files/2025-12/467459402_525799813831572_2048064753693338637_n.webp" />
+        <meta name="keywords" content="tin tuc minecraft, su kien minecraft, buildnchill news" />
+      </Helmet>
       <div className="container my-5">
         <motion.h1
           className="tet-title mb-4"

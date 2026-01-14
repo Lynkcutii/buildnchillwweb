@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { useData } from '../context/DataContext';
 import { BiArrowBack, BiCalendar } from 'react-icons/bi';
 import 'react-quill/dist/quill.snow.css';
@@ -32,6 +33,14 @@ const NewsDetail = () => {
 
   return (
     <div className="shop-tet-container">
+      <Helmet>
+        <title>{post.title} - BuildnChill News</title>
+        <meta name="description" content={post.description || post.title} />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.description} />
+        <meta property="og:image" content={post.image} />
+        <meta property="og:type" content="article" />
+      </Helmet>
       <div className="container my-5">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
