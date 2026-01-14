@@ -40,9 +40,9 @@ const Contact = () => {
         alert('Vui lòng chọn file ảnh!');
         return;
       }
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Kích thước ảnh không được vượt quá 5MB!');
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Kích thước ảnh không được vượt quá 10MB!');
         return;
       }
       setFormData({
@@ -226,7 +226,7 @@ const Contact = () => {
                   onChange={handleImageChange}
                 />
                 <small className="form-text" style={{ color: '#999999' }}>
-                  Chỉ chấp nhận file ảnh, kích thước tối đa 5MB
+                  Chỉ chấp nhận file ảnh, kích thước tối đa 10MB
                 </small>
                 {imagePreview && (
                   <div className="mt-4">
