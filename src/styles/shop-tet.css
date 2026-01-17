@@ -667,6 +667,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: 1px solid #ffccbc;
 }
 
+.rank-item.top-4 {
+  background: linear-gradient(135deg, #f0fff4 0%, #dcffe4 100%);
+  border: 1px solid #c6f6d5;
+}
+
+.rank-item.top-5 {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+}
+
 .rank-badge {
   width: 20px;
   font-size: 0.7rem;
@@ -678,6 +688,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .top-1 .rank-badge { color: var(--tet-gold-dark); opacity: 1; }
 .top-2 .rank-badge { color: #6c757d; opacity: 1; }
 .top-3 .rank-badge { color: #d84315; opacity: 1; }
+.top-4 .rank-badge { color: #2f855a; opacity: 1; }
+.top-5 .rank-badge { color: #0284c7; opacity: 1; }
 
 .player-avatar img {
   width: 40px;

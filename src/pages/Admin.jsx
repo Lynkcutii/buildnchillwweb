@@ -193,10 +193,19 @@ const Admin = () => {
         .sort((a, b) => b.count - a.count)
         .slice(0, 5);
 
-      const topDonators = Object.entries(userSpending)
+      const sortedDonators = Object.entries(userSpending)
         .map(([name, total]) => ({ name, total }))
-        .sort((a, b) => b.total - a.total)
-        .slice(0, 5);
+        .sort((a, b) => b.total - a.total);
+
+      let currentRank = 0;
+      let lastTotal = -1;
+      const topDonators = sortedDonators.map((user, index) => {
+        if (user.total !== lastTotal) {
+          currentRank = index + 1;
+          lastTotal = user.total;
+        }
+        return { ...user, rank: currentRank };
+      }).slice(0, 5);
 
       setStats({
         pendingOrders: pending,
@@ -637,9 +646,9 @@ const Admin = () => {
                             initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: i * 0.1 }}
-                            className={`rank-item d-flex align-items-center p-2 rounded position-relative ${i === 0 ? 'top-1' : i === 1 ? 'top-2' : i === 2 ? 'top-3' : ''}`}
+                            className={`rank-item d-flex align-items-center p-2 rounded position-relative ${user.rank === 1 ? 'top-1' : user.rank === 2 ? 'top-2' : user.rank === 3 ? 'top-3' : user.rank === 4 ? 'top-4' : user.rank === 5 ? 'top-5' : ''}`}
                           >
-                            <div className="rank-badge">{i + 1}</div>
+                            <div className="rank-badge">{user.rank}</div>
                             <div className="player-avatar me-3">
                               <img 
                                 src={`https://mc-heads.net/avatar/${user.name}/40`} 
@@ -651,7 +660,7 @@ const Admin = () => {
                               <div className="player-name text-truncate">{user.name}</div>
                               <div className="recharge-amount">{user.total.toLocaleString('vi-VN')} VNĐ</div>
                             </div>
-                            {i < 3 && <div className="medal-icon">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</div>}
+                            {user.rank < 4 && <div className="medal-icon">{user.rank === 1 ? '🥇' : user.rank === 2 ? '🥈' : '🥉'}</div>}
                           </motion.div>
                         ))}
                         {stats.topDonators.length === 0 && <div className="text-center py-2 text-muted small">Chưa có dữ liệu</div>}
