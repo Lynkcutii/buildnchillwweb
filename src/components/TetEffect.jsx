@@ -271,7 +271,7 @@ const TetEffect = () => {
     }
 
     // --- 6. LOOP ---
-    for (let i = 0; i < 30; i++) blossoms.push(new Blossom());
+    for (let i = 0; i < 15; i++) blossoms.push(new Blossom());
 
     function loop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);

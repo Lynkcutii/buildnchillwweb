@@ -196,7 +196,7 @@ const Admin = () => {
       const topDonators = Object.entries(userSpending)
         .map(([name, total]) => ({ name, total }))
         .sort((a, b) => b.total - a.total)
-        .slice(0, 10);
+        .slice(0, 5);
 
       setStats({
         pendingOrders: pending,
@@ -552,27 +552,67 @@ const Admin = () => {
 
                 <div className="row g-4 mb-5">
                   <div className="col-12 col-lg-8">
-                    <div className="admin-card tet-glass p-4 h-100">
-                      <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Doanh Thu 7 Ngày Gần Nhất</h5>
-                      <div style={{ height: '300px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 10px 40px 10px', borderBottom: '1px solid rgba(0,0,0,0.1)', position: 'relative' }}>
-                        {stats.revenueByDay.map((day, index) => {
-                          const maxRevenue = Math.max(...stats.revenueByDay.map(d => d.revenue), 100000);
-                          const height = (day.revenue / maxRevenue) * 220;
-                          return (
-                            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '12%' }}>
-                              {day.revenue > 0 && <span style={{ fontSize: '0.65rem', fontWeight: 'bold', color: 'var(--tet-lucky-red)', marginBottom: '5px' }}>{(day.revenue / 1000).toFixed(0)}k</span>}
-                              <motion.div initial={{ height: 0 }} animate={{ height: `${height}px` }} style={{ width: '100%', background: 'var(--tet-gradient-1)', borderRadius: '4px 4px 0 0', position: 'relative' }}>
-                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom, rgba(255,215,0,0.3), transparent)', borderRadius: '4px 4px 0 0' }}></div>
-                              </motion.div>
-                              <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--tet-lucky-red-dark)', marginTop: '8px' }}>{day.date}</span>
+                    <div className="row g-4">
+                      <div className="col-12">
+                        <div className="admin-card tet-glass p-4">
+                          <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Doanh Thu 7 Ngày Gần Nhất</h5>
+                          <div style={{ height: '300px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 10px 40px 10px', borderBottom: '1px solid rgba(0,0,0,0.1)', position: 'relative' }}>
+                            {stats.revenueByDay.map((day, index) => {
+                              const maxRevenue = Math.max(...stats.revenueByDay.map(d => d.revenue), 100000);
+                              const height = (day.revenue / maxRevenue) * 220;
+                              return (
+                                <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '12%' }}>
+                                  {day.revenue > 0 && <span style={{ fontSize: '0.65rem', fontWeight: 'bold', color: 'var(--tet-lucky-red)', marginBottom: '5px' }}>{(day.revenue / 1000).toFixed(0)}k</span>}
+                                  <motion.div initial={{ height: 0 }} animate={{ height: `${height}px` }} style={{ width: '100%', background: 'var(--tet-gradient-1)', borderRadius: '4px 4px 0 0', position: 'relative' }}>
+                                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom, rgba(255,215,0,0.3), transparent)', borderRadius: '4px 4px 0 0' }}></div>
+                                  </motion.div>
+                                  <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--tet-lucky-red-dark)', marginTop: '8px' }}>{day.date}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="col-12 col-md-6">
+                        <div className="admin-card tet-glass p-4 h-100">
+                          <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Sản phẩm bán chạy</h5>
+                          <div className="list-unstyled">
+                            {stats.topProducts.map((p, i) => (
+                              <div key={i} className="mb-2 d-flex justify-content-between align-items-center p-2 rounded" style={{ background: 'rgba(215, 0, 24, 0.05)', borderLeft: '3px solid var(--tet-lucky-red)' }}>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--tet-lucky-red-dark)', fontWeight: 600 }}>{i + 1}. {p.name}</span>
+                                <span className="badge rounded-pill" style={{ background: 'var(--tet-gradient-2)', color: 'white' }}>{p.count} đơn</span>
+                              </div>
+                            ))}
+                            {stats.topProducts.length === 0 && <div className="text-center py-2 text-muted small">Chưa có dữ liệu</div>}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-md-6">
+                        <div className="admin-card tet-glass p-4 h-100">
+                          <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Tổng Quan Khác</h5>
+                          <div className="d-flex flex-column gap-3">
+                            <div className="d-flex justify-content-between align-items-center p-2 rounded border-bottom">
+                              <span style={{ fontSize: '0.9rem', color: '#1a1a1a', fontWeight: 600 }}>Bài viết tin tức</span>
+                              <span className="badge bg-primary rounded-pill px-3">{news.length}</span>
                             </div>
-                          );
-                        })}
+                            <div className="d-flex justify-content-between align-items-center p-2 rounded border-bottom">
+                              <span style={{ fontSize: '0.9rem', color: '#1a1a1a', fontWeight: 600 }}>Liên hệ mới</span>
+                              <span className="badge bg-danger rounded-pill px-3">{unreadCount}</span>
+                            </div>
+                            <div className="d-flex justify-content-between align-items-center p-2 rounded border-bottom">
+                              <span style={{ fontSize: '0.9rem', color: '#1a1a1a', fontWeight: 600 }}>Đơn hàng chưa giao</span>
+                              <span className="badge bg-warning text-dark rounded-pill px-3">{undeliveredOrdersCount}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
+
                   <div className="col-12 col-lg-4">
-                    <div className="admin-card tet-glass p-4 mb-4" style={{ overflow: 'visible' }}>
+                    <div className="admin-card tet-glass p-4 h-100" style={{ overflow: 'visible' }}>
                       <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>
                         <BiStar className="me-2" /> Top Nạp
                       </h5>
@@ -615,36 +655,6 @@ const Admin = () => {
                           </motion.div>
                         ))}
                         {stats.topDonators.length === 0 && <div className="text-center py-2 text-muted small">Chưa có dữ liệu</div>}
-                      </div>
-                    </div>
-
-                    <div className="admin-card tet-glass p-4 mb-4">
-                      <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Sản phẩm bán chạy</h5>
-                      <div className="list-unstyled">
-                        {stats.topProducts.map((p, i) => (
-                          <div key={i} className="mb-2 d-flex justify-content-between align-items-center p-2 rounded" style={{ background: 'rgba(215, 0, 24, 0.05)', borderLeft: '3px solid var(--tet-lucky-red)' }}>
-                            <span style={{ fontSize: '0.9rem', color: 'var(--tet-lucky-red-dark)', fontWeight: 600 }}>{i + 1}. {p.name}</span>
-                            <span className="badge rounded-pill" style={{ background: 'var(--tet-gradient-2)', color: 'white' }}>{p.count} đơn</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="admin-card tet-glass p-4">
-                      <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Tổng Quan Khác</h5>
-                      <div className="d-flex flex-column gap-3">
-                        <div className="d-flex justify-content-between align-items-center p-2 rounded border-bottom">
-                          <span style={{ fontSize: '0.9rem', color: '#1a1a1a', fontWeight: 600 }}>Bài viết tin tức</span>
-                          <span className="badge bg-primary rounded-pill px-3">{news.length}</span>
-                        </div>
-                        <div className="d-flex justify-content-between align-items-center p-2 rounded border-bottom">
-                          <span style={{ fontSize: '0.9rem', color: '#1a1a1a', fontWeight: 600 }}>Liên hệ mới</span>
-                          <span className="badge bg-danger rounded-pill px-3">{unreadCount}</span>
-                        </div>
-                        <div className="d-flex justify-content-between align-items-center p-2 rounded border-bottom">
-                          <span style={{ fontSize: '0.9rem', color: '#1a1a1a', fontWeight: 600 }}>Liên hệ chờ xử lý</span>
-                          <span className="badge bg-warning text-dark rounded-pill px-3">{pendingCount}</span>
-                        </div>
                       </div>
                     </div>
                   </div>

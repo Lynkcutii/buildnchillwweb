@@ -113,7 +113,7 @@ const Shop = () => {
       const sorted = Object.entries(userSpending)
         .map(([name, total]) => ({ name, total }))
         .sort((a, b) => b.total - a.total)
-        .slice(0, 10);
+        .slice(0, 5);
 
       setTopDonators(sorted);
     } catch (error) {
