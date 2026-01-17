@@ -213,7 +213,7 @@ const ShopProductsManagement = () => {
               <tr key={product.id}>
                 <td>
                   {product.image_url ? (
-                    <img src={product.image_url} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} />
+                    <img src={product.image_url} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'contain', background: '#f8f9fa', borderRadius: '4px' }} />
                   ) : (
                     <span>📦</span>
                   )}
@@ -295,10 +295,10 @@ const ShopProductsManagement = () => {
                 <label className="tet-label">Hình Ảnh Sản Phẩm</label>
                 <div className="d-flex gap-3 align-items-center mb-2">
                   {formData.image_url && !imageFile && (
-                    <img src={formData.image_url} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--tet-gold)' }} />
+                    <img src={formData.image_url} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'contain', background: '#f8f9fa', borderRadius: '8px', border: '1px solid var(--tet-gold)' }} />
                   )}
                   {imageFile && (
-                    <img src={URL.createObjectURL(imageFile)} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '2px solid var(--tet-lucky-red)' }} />
+                    <img src={URL.createObjectURL(imageFile)} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'contain', background: '#f8f9fa', borderRadius: '8px', border: '2px solid var(--tet-lucky-red)' }} />
                   )}
                   <input 
                     type="file" 

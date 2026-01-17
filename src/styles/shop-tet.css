@@ -281,7 +281,7 @@
 
 .product-image-wrapper {
   width: 100%;
-  height: 220px;
+  height: 240px;
   overflow: hidden;
   position: relative;
   background: linear-gradient(135deg, #fffdf0 0%, #fff8dc 100%);
@@ -636,5 +636,98 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   position: relative;
   appearance: none;
   -webkit-appearance: none;
+}
+
+/* Rank Item Styling */
+.rank-item {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.rank-item:hover {
+  transform: translateX(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.rank-item.top-1 {
+  background: linear-gradient(135deg, #fffcf0 0%, #fff8dc 100%);
+  border: 1px solid var(--tet-gold);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2);
+}
+
+.rank-item.top-2 {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid #ced4da;
+}
+
+.rank-item.top-3 {
+  background: linear-gradient(135deg, #fff5f2 0%, #ffe8e0 100%);
+  border: 1px solid #ffccbc;
+}
+
+.rank-badge {
+  width: 20px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--tet-text-charcoal);
+  opacity: 0.5;
+}
+
+.top-1 .rank-badge { color: var(--tet-gold-dark); opacity: 1; }
+.top-2 .rank-badge { color: #6c757d; opacity: 1; }
+.top-3 .rank-badge { color: #d84315; opacity: 1; }
+
+.player-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.top-1 .player-avatar img { border-color: var(--tet-gold); }
+
+.player-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--tet-text-dark);
+}
+
+.recharge-amount {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tet-lucky-red);
+}
+
+.medal-icon {
+  font-size: 1.2rem;
+  margin-left: 5px;
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+@media (max-width: 991.98px) {
+  .tet-title {
+    font-size: 2.5rem;
+  }
+  
+  .tet-title::after, .tet-title::before {
+    display: none;
+  }
+
+  /* Order columns on mobile */
+  .shop-tet-container .row {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .shop-tet-container .col-lg-7 { order: 1; }
+  .shop-tet-container .col-lg-3 { order: 2; }
+  .shop-tet-container .col-lg-2 { order: 3; }
 }
 

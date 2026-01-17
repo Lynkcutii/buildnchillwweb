@@ -9,7 +9,9 @@ import TetEffect from '../components/TetEffect';
 import ShopCategoriesManagement from '../components/ShopCategoriesManagement';
 import ShopProductsManagement from '../components/ShopProductsManagement';
 import ShopOrdersManagement from '../components/ShopOrdersManagement';
+import TetDatePicker from '../components/TetDatePicker';
 import '../styles/tet-theme.css';
+import '../styles/shop-tet.css';
 import {
   BiBarChart,
   BiNews,
@@ -26,7 +28,8 @@ import {
   BiImage,
   BiShoppingBag,
   BiShow,
-  BiCalendar
+  BiCalendar,
+  BiStar
 } from 'react-icons/bi';
 
 const Admin = () => {
@@ -193,7 +196,7 @@ const Admin = () => {
       const topDonators = Object.entries(userSpending)
         .map(([name, total]) => ({ name, total }))
         .sort((a, b) => b.total - a.total)
-        .slice(0, 5);
+        .slice(0, 10);
 
       setStats({
         pendingOrders: pending,
@@ -252,6 +255,27 @@ const Admin = () => {
   const unreadCount = contacts.filter(c => !c.read).length;
   const pendingCount = unresolvedContactsCount;
   const undeliveredOrdersCount = stats.pendingOrders; // stats.pendingOrders đã lọc theo status paid và !delivered ở loadDashboardStats
+
+  const setTopDatePreset = (preset) => {
+    const now = new Date();
+    let start = new Date();
+    const end = now.toISOString().split('T')[0];
+
+    if (preset === 'week') {
+      start.setDate(now.getDate() - 7);
+    } else if (preset === 'month') {
+      start.setMonth(now.getMonth() - 1);
+    } else if (preset === 'year') {
+      start.setFullYear(now.getFullYear() - 1);
+    } else if (preset === 'all') {
+      start = new Date('2024-01-01');
+    }
+
+    setTopDateRange({
+      start: start.toISOString().split('T')[0],
+      end: end
+    });
+  };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -548,44 +572,47 @@ const Admin = () => {
                     </div>
                   </div>
                   <div className="col-12 col-lg-4">
-                    <div className="admin-card tet-glass p-4 mb-4">
-                      <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Top Nạp</h5>
-                      
+                    <div className="admin-card tet-glass p-4 mb-4" style={{ overflow: 'visible' }}>
+                      <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>
+                        <BiStar className="me-2" /> Top Nạp
+                      </h5>
+
                       <div className="d-flex flex-column gap-2 mb-4">
-                        <div>
-                          <label className="d-block mb-1 small fw-bold text-muted">Từ ngày</label>
-                          <div className="position-relative">
-                            <input 
-                              type="date" 
-                              className="tet-input w-100 pe-5 py-1"
-                              value={topDateRange.start}
-                              onChange={(e) => setTopDateRange({ ...topDateRange, start: e.target.value })}
-                              style={{ fontSize: '0.85rem' }}
-                            />
-                            <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-2 text-muted" style={{ pointerEvents: 'none' }} />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="d-block mb-1 small fw-bold text-muted">Đến ngày</label>
-                          <div className="position-relative">
-                            <input 
-                              type="date" 
-                              className="tet-input w-100 pe-5 py-1"
-                              value={topDateRange.end}
-                              onChange={(e) => setTopDateRange({ ...topDateRange, end: e.target.value })}
-                              style={{ fontSize: '0.85rem' }}
-                            />
-                            <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-2 text-muted" style={{ pointerEvents: 'none' }} />
-                          </div>
-                        </div>
+                        <TetDatePicker 
+                          label="Từ ngày"
+                          value={topDateRange.start}
+                          onChange={(val) => setTopDateRange({ ...topDateRange, start: val })}
+                        />
+                        <TetDatePicker 
+                          label="Đến ngày"
+                          value={topDateRange.end}
+                          onChange={(val) => setTopDateRange({ ...topDateRange, end: val })}
+                        />
                       </div>
 
-                      <div className="list-unstyled">
+                      <div className="list-unstyled d-flex flex-column gap-3">
                         {stats.topDonators.map((user, i) => (
-                          <div key={i} className="mb-2 d-flex justify-content-between align-items-center p-2 rounded" style={{ background: 'rgba(255, 215, 0, 0.05)', borderLeft: '3px solid var(--tet-gold)' }}>
-                            <span style={{ fontSize: '0.9rem', color: '#4a0404', fontWeight: 600 }}>{i + 1}. {user.name}</span>
-                            <span className="badge rounded-pill" style={{ background: 'var(--tet-lucky-red)', color: 'white' }}>{user.total.toLocaleString('vi-VN')}đ</span>
-                          </div>
+                          <motion.div 
+                            key={i} 
+                            initial={{ x: 20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ delay: i * 0.1 }}
+                            className={`rank-item d-flex align-items-center p-2 rounded position-relative ${i === 0 ? 'top-1' : i === 1 ? 'top-2' : i === 2 ? 'top-3' : ''}`}
+                          >
+                            <div className="rank-badge">{i + 1}</div>
+                            <div className="player-avatar me-3">
+                              <img 
+                                src={`https://mc-heads.net/avatar/${user.name}/40`} 
+                                alt={user.name} 
+                                onError={(e) => { e.target.src = 'https://mc-heads.net/avatar/Steve/40'; }}
+                              />
+                            </div>
+                            <div className="player-info flex-grow-1 overflow-hidden">
+                              <div className="player-name text-truncate">{user.name}</div>
+                              <div className="recharge-amount">{user.total.toLocaleString('vi-VN')} VNĐ</div>
+                            </div>
+                            {i < 3 && <div className="medal-icon">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</div>}
+                          </motion.div>
                         ))}
                         {stats.topDonators.length === 0 && <div className="text-center py-2 text-muted small">Chưa có dữ liệu</div>}
                       </div>

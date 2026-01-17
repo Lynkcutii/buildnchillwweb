@@ -101,13 +101,14 @@ const NewsDetail = () => {
               })}
             </motion.p>
             <motion.div
-              className="news-content ql-snow ql-editor"
+              className="news-content ql-snow"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              dangerouslySetInnerHTML={{ __html: post.content }}
               style={{ padding: 0 }}
-            />
+            >
+              <div className="ql-editor p-0" dangerouslySetInnerHTML={{ __html: post.content }} />
+            </motion.div>
           </article>
         </motion.div>
       </div>

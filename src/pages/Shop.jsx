@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { BiShoppingBag, BiUser, BiCheckCircle, BiXCircle, BiGift, BiQrScan, BiCreditCard, BiStar, BiCalendar } from 'react-icons/bi';
 import { supabase } from '../supabaseClient';
 import TetEffect from '../components/TetEffect';
+import TetDatePicker from '../components/TetDatePicker';
 import '../styles/shop-tet.css';
 import { QRCodeCanvas } from 'qrcode.react';
 
@@ -112,7 +113,7 @@ const Shop = () => {
       const sorted = Object.entries(userSpending)
         .map(([name, total]) => ({ name, total }))
         .sort((a, b) => b.total - a.total)
-        .slice(0, 5);
+        .slice(0, 10);
 
       setTopDonators(sorted);
     } catch (error) {
@@ -323,6 +324,27 @@ const Shop = () => {
     }
   };
 
+  const setDatePreset = (preset) => {
+    const now = new Date();
+    let start = new Date();
+    const end = now.toISOString().split('T')[0];
+
+    if (preset === 'week') {
+      start.setDate(now.getDate() - 7);
+    } else if (preset === 'month') {
+      start.setMonth(now.getMonth() - 1);
+    } else if (preset === 'year') {
+      start.setFullYear(now.getFullYear() - 1);
+    } else if (preset === 'all') {
+      start = new Date('2024-01-01'); // Early enough date
+    }
+
+    setDateRange({
+      start: start.toISOString().split('T')[0],
+      end: end
+    });
+  };
+
   return (
     <div className="shop-tet-container">
       <Helmet>
@@ -475,82 +497,32 @@ const Shop = () => {
             )}
           </AnimatePresence>
 
-          <div className="row">
-            <div className="col-lg-3 mb-4">
-              <div className="tet-glass p-4 sticky-top" style={{ top: '100px', zIndex: 10 }}>
-                <h4 className="tet-section-title mb-4">
-                  <BiStar /> Danh Mục
-                </h4>
-                <div className="d-flex flex-column gap-3">
+          <div className="row g-4">
+            <div className="col-lg-2 mb-4">
+              <div className="tet-glass p-3 sticky-top" style={{ top: '100px', zIndex: 10 }}>
+                <h5 className="tet-section-title mb-4" style={{ fontSize: '1.2rem' }}>
+                  Danh Mục
+                </h5>
+                <div className="d-flex flex-column gap-2">
                   {categories.map(cat => (
                     <motion.button
                       key={cat.id}
                       className={`tet-category-btn ${selectedCategory === cat.id ? 'active' : ''}`}
                       onClick={() => handleCategoryChange(cat.id)}
                       whileTap={{ scale: 0.95 }}
+                      style={{ padding: '10px 15px', fontSize: '0.9rem' }}
                     >
                       {cat.name.includes('VIP') ? '👑' : cat.name.includes('ITEM') ? '📦' : '🏮'} {cat.name}
                     </motion.button>
                   ))}
                 </div>
               </div>
-
-              <div className="tet-glass p-4 mt-4">
-                <h4 className="tet-section-title mb-3">
-                  <BiStar /> Top Nạp
-                </h4>
-                
-                <div className="d-flex flex-column gap-3 mb-4">
-                  <div>
-                    <label className="d-block mb-1 small fw-bold text-muted">Từ ngày</label>
-                    <div className="position-relative">
-                      <input 
-                        type="date" 
-                        className="tet-input w-100 pe-5"
-                        value={dateRange.start}
-                        onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-                        style={{ fontSize: '0.9rem' }}
-                      />
-                      <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted" style={{ pointerEvents: 'none' }} />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="d-block mb-1 small fw-bold text-muted">Đến ngày</label>
-                    <div className="position-relative">
-                      <input 
-                        type="date" 
-                        className="tet-input w-100 pe-5"
-                        value={dateRange.end}
-                        onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
-                        style={{ fontSize: '0.9rem' }}
-                      />
-                      <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted" style={{ pointerEvents: 'none' }} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="list-unstyled">
-                  {loadingTop ? (
-                    <div className="text-center py-3 text-muted small">Đang tải...</div>
-                  ) : topDonators.map((user, i) => (
-                    <div key={i} className="mb-2 d-flex justify-content-between align-items-center p-2 rounded" style={{ background: 'rgba(255, 215, 0, 0.05)', borderLeft: '3px solid var(--tet-gold)' }}>
-                      <span style={{ fontSize: '0.85rem', color: '#4a0404', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
-                        {i + 1}. {user.name}
-                      </span>
-                      <span className="badge rounded-pill" style={{ background: 'var(--tet-lucky-red)', color: 'white', fontSize: '0.7rem' }}>
-                        {user.total.toLocaleString('vi-VN')}đ
-                      </span>
-                    </div>
-                  ))}
-                  {!loadingTop && topDonators.length === 0 && <div className="text-center py-2 text-muted small">Chưa có dữ liệu</div>}
-                </div>
-              </div>
             </div>
 
-            <div className="col-lg-9">
+            <div className="col-lg-7">
               <div className="row g-4 mb-5">
                 {filteredProducts.map(product => (
-                  <div key={product.id} className="col-md-6 col-xl-4">
+                  <div key={product.id} className="col-md-6">
                     <motion.div
                       className={`tet-product-card ${selectedProduct?.id === product.id ? 'selected' : ''}`}
                       onClick={() => handleProductSelect(product)}
@@ -572,12 +544,12 @@ const Shop = () => {
                             {categories.find(c => c.id === product.category_id)?.name || 'Currency'}
                           </div>
 
-                          <h4 style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 800, fontSize: '1.2rem', margin: '5px 0' }}>
+                          <h4 style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 800, fontSize: '1.1rem', margin: '5px 0' }}>
                             {product.name}
                           </h4>
                           {product.description && (
                             <p style={{ 
-                              fontSize: '0.85rem', 
+                              fontSize: '0.8rem', 
                               color: 'var(--tet-text-charcoal)', 
                               opacity: 0.8,
                               display: '-webkit-box',
@@ -592,12 +564,13 @@ const Shop = () => {
                         </div>
 
                         <div>
-                          <div className="product-price-display">
+                          <div className="product-price-display" style={{ fontSize: '1.2rem' }}>
                             {product.price?.toLocaleString('vi-VN')} VNĐ
                           </div>
 
                           <motion.button
                             className="tet-button-shop py-2"
+                            style={{ fontSize: '0.9rem' }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
@@ -687,6 +660,59 @@ const Shop = () => {
                   <li>Vật phẩm sẽ được giao tự động sau khi thanh toán được xác nhận.</li>
                   <li>Mọi thắc mắc vui lòng liên hệ Admin qua Discord hoặc mục Liên Hệ.</li>
                 </ul>
+              </div>
+            </div>
+
+            <div className="col-lg-3">
+              <div className="tet-glass p-4 sticky-top" style={{ top: '100px', overflow: 'visible' }}>
+                <h4 className="tet-section-title mb-3" style={{ color: 'var(--tet-gold-dark)' }}>
+                  <BiStar /> Top Nạp
+                </h4>
+
+                <div className="d-flex flex-column gap-2 mb-4 bg-white p-2 rounded shadow-sm">
+                  <TetDatePicker 
+                    label="Từ ngày"
+                    value={dateRange.start}
+                    onChange={(val) => setDateRange({ ...dateRange, start: val })}
+                  />
+                  <TetDatePicker 
+                    label="Đến ngày"
+                    value={dateRange.end}
+                    onChange={(val) => setDateRange({ ...dateRange, end: val })}
+                  />
+                </div>
+
+                <div className="list-unstyled d-flex flex-column gap-3">
+                  {loadingTop ? (
+                    <div className="text-center py-5">
+                      <div className="spinner-border text-danger spinner-border-sm" role="status"></div>
+                      <div className="mt-2 text-muted small">Đang cập nhật...</div>
+                    </div>
+                  ) : topDonators.map((user, i) => (
+                    <motion.div 
+                      key={i} 
+                      initial={{ x: 20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: i * 0.1 }}
+                      className={`rank-item d-flex align-items-center p-2 rounded position-relative ${i === 0 ? 'top-1' : i === 1 ? 'top-2' : i === 2 ? 'top-3' : ''}`}
+                    >
+                      <div className="rank-badge">{i + 1}</div>
+                      <div className="player-avatar me-3">
+                        <img 
+                          src={`https://mc-heads.net/avatar/${user.name}/40`} 
+                          alt={user.name} 
+                          onError={(e) => { e.target.src = 'https://mc-heads.net/avatar/Steve/40'; }}
+                        />
+                      </div>
+                      <div className="player-info flex-grow-1 overflow-hidden">
+                        <div className="player-name text-truncate">{user.name}</div>
+                        <div className="recharge-amount">{user.total.toLocaleString('vi-VN')} VNĐ</div>
+                      </div>
+                      {i < 3 && <div className="medal-icon">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</div>}
+                    </motion.div>
+                  ))}
+                  {!loadingTop && topDonators.length === 0 && <div className="text-center py-4 text-muted small glass-light rounded">Chưa có dữ liệu cho khoảng thời gian này</div>}
+                </div>
               </div>
             </div>
           </div>
