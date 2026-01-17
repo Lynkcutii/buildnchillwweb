@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BiPlus, BiEdit, BiTrash, BiCheck, BiX } from 'react-icons/bi';
 import { supabase } from '../supabaseClient';
+import RichTextEditor from './RichTextEditor';
 
 const ShopProductsManagement = () => {
   const [products, setProducts] = useState([]);
@@ -284,7 +285,11 @@ const ShopProductsManagement = () => {
               </div>
               <div className="mb-3">
                 <label className="tet-label">Mô Tả</label>
-                <textarea className="tet-input" rows="3" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+                <RichTextEditor 
+                  value={formData.description} 
+                  onChange={(val) => setFormData({ ...formData, description: val })} 
+                  placeholder="Mô tả chi tiết sản phẩm..."
+                />
               </div>
               <div className="mb-3">
                 <label className="tet-label">Hình Ảnh Sản Phẩm</label>

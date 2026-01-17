@@ -594,3 +594,47 @@
     font-size: 1.1rem;
   }
 }
+
+/* Rich Text Content Styling */
+.product-description-full {
+  color: var(--tet-text-charcoal);
+}
+
+.product-description-full.ql-snow {
+  border: none !important;
+}
+
+.product-description-full .ql-editor {
+  line-height: 1.6;
+  font-family: inherit;
+  height: auto;
+  overflow: visible;
+}
+
+.product-description-full .ql-editor p {
+  margin-bottom: 0.5rem;
+}
+
+.product-description-full .ql-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Ensure indentation and colors from Quill are preserved */
+.product-description-full .ql-editor span[style*="color"] {
+  color: inherit; /* Allow the inline style to take precedence */
+}
+
+/* Hide native date icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.tet-input[type="date"] {
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+}
+

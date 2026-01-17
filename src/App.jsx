@@ -16,6 +16,7 @@ import Shop from './pages/Shop';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import TetEffect from './components/TetEffect';
+import 'react-quill/dist/quill.snow.css';
 import './styles.css';
 import './styles/custom.css'
 import './styles/carousel.css';

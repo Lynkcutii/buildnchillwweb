@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { BiShoppingBag, BiUser, BiCheckCircle, BiXCircle, BiGift, BiQrScan, BiCreditCard, BiStar } from 'react-icons/bi';
+import { BiShoppingBag, BiUser, BiCheckCircle, BiXCircle, BiGift, BiQrScan, BiCreditCard, BiStar, BiCalendar } from 'react-icons/bi';
 import { supabase } from '../supabaseClient';
 import TetEffect from '../components/TetEffect';
 import '../styles/shop-tet.css';
@@ -23,6 +23,12 @@ const Shop = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
+  const [topDonators, setTopDonators] = useState([]);
+  const [dateRange, setDateRange] = useState({
+    start: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
+    end: new Date().toISOString().split('T')[0]
+  });
+  const [loadingTop, setLoadingTop] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState({
     qr_code: '',
     bank_account: '0379981206',
@@ -75,7 +81,46 @@ const Shop = () => {
   useEffect(() => {
     loadCategories();
     loadProducts();
-  }, []);
+    loadTopDonators();
+  }, [dateRange]);
+
+  const loadTopDonators = async () => {
+    setLoadingTop(true);
+    try {
+      let query = supabase
+        .from('orders')
+        .select('mc_username, price, created_at, status, delivered')
+        .eq('is_deleted', false)
+        .or('status.eq.paid,status.eq.delivered,delivered.eq.true');
+
+      if (dateRange.start) {
+        query = query.gte('created_at', `${dateRange.start}T00:00:00`);
+      }
+      if (dateRange.end) {
+        query = query.lte('created_at', `${dateRange.end}T23:59:59`);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      const userSpending = {};
+      data.forEach(order => {
+        const username = order.mc_username || 'Ẩn danh';
+        userSpending[username] = (userSpending[username] || 0) + (order.price || 0);
+      });
+
+      const sorted = Object.entries(userSpending)
+        .map(([name, total]) => ({ name, total }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 5);
+
+      setTopDonators(sorted);
+    } catch (error) {
+      console.error('Error loading top donators:', error);
+    } finally {
+      setLoadingTop(false);
+    }
+  };
 
   const loadCategories = async () => {
     try {
@@ -88,6 +133,9 @@ const Shop = () => {
 
       if (error) throw error;
       setCategories(data || []);
+      if (data && data.length > 0 && !selectedCategory) {
+        setSelectedCategory(data[0].id);
+      }
     } catch (error) {
       console.error('Error loading categories:', error);
     }
@@ -107,6 +155,12 @@ const Shop = () => {
     } catch (error) {
       console.error('Error loading products:', error);
     }
+  };
+
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
   };
 
   const filteredProducts = selectedCategory
@@ -329,6 +383,11 @@ const Shop = () => {
                   <div className="mb-3">
                     <strong style={{ color: 'var(--tet-lucky-red-dark)' }}>Sản phẩm:</strong> {currentOrder.product}
                   </div>
+                  {products.find(p => p.id === currentOrder.product_id)?.description && (
+                    <div className="mb-3 product-description-full ql-snow" style={{ fontSize: '0.9rem', borderTop: '1px solid rgba(215, 0, 24, 0.1)', paddingTop: '10px' }}>
+                      <div className="ql-editor p-0" dangerouslySetInnerHTML={{ __html: products.find(p => p.id === currentOrder.product_id).description }} />
+                    </div>
+                  )}
                   <div className="mb-3">
                     <strong style={{ color: 'var(--tet-lucky-red-dark)' }}>Giá:</strong> {currentOrder.price?.toLocaleString('vi-VN')} VNĐ
                   </div>
@@ -423,13 +482,6 @@ const Shop = () => {
                   <BiStar /> Danh Mục
                 </h4>
                 <div className="d-flex flex-column gap-3">
-                  <motion.button
-                    className={`tet-category-btn ${selectedCategory === null ? 'active' : ''}`}
-                    onClick={() => handleCategoryChange(null)}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    🌸 Tất Cả Sản Phẩm
-                  </motion.button>
                   {categories.map(cat => (
                     <motion.button
                       key={cat.id}
@@ -440,6 +492,57 @@ const Shop = () => {
                       {cat.name.includes('VIP') ? '👑' : cat.name.includes('ITEM') ? '📦' : '🏮'} {cat.name}
                     </motion.button>
                   ))}
+                </div>
+              </div>
+
+              <div className="tet-glass p-4 mt-4">
+                <h4 className="tet-section-title mb-3">
+                  <BiStar /> Top Nạp
+                </h4>
+                
+                <div className="d-flex flex-column gap-3 mb-4">
+                  <div>
+                    <label className="d-block mb-1 small fw-bold text-muted">Từ ngày</label>
+                    <div className="position-relative">
+                      <input 
+                        type="date" 
+                        className="tet-input w-100 pe-5"
+                        value={dateRange.start}
+                        onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                        style={{ fontSize: '0.9rem' }}
+                      />
+                      <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted" style={{ pointerEvents: 'none' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="d-block mb-1 small fw-bold text-muted">Đến ngày</label>
+                    <div className="position-relative">
+                      <input 
+                        type="date" 
+                        className="tet-input w-100 pe-5"
+                        value={dateRange.end}
+                        onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                        style={{ fontSize: '0.9rem' }}
+                      />
+                      <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted" style={{ pointerEvents: 'none' }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="list-unstyled">
+                  {loadingTop ? (
+                    <div className="text-center py-3 text-muted small">Đang tải...</div>
+                  ) : topDonators.map((user, i) => (
+                    <div key={i} className="mb-2 d-flex justify-content-between align-items-center p-2 rounded" style={{ background: 'rgba(255, 215, 0, 0.05)', borderLeft: '3px solid var(--tet-gold)' }}>
+                      <span style={{ fontSize: '0.85rem', color: '#4a0404', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
+                        {i + 1}. {user.name}
+                      </span>
+                      <span className="badge rounded-pill" style={{ background: 'var(--tet-lucky-red)', color: 'white', fontSize: '0.7rem' }}>
+                        {user.total.toLocaleString('vi-VN')}đ
+                      </span>
+                    </div>
+                  ))}
+                  {!loadingTop && topDonators.length === 0 && <div className="text-center py-2 text-muted small">Chưa có dữ liệu</div>}
                 </div>
               </div>
             </div>
@@ -472,6 +575,20 @@ const Shop = () => {
                           <h4 style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 800, fontSize: '1.2rem', margin: '5px 0' }}>
                             {product.name}
                           </h4>
+                          {product.description && (
+                            <p style={{ 
+                              fontSize: '0.85rem', 
+                              color: 'var(--tet-text-charcoal)', 
+                              opacity: 0.8,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              marginBottom: '10px'
+                            }}>
+                              {stripHtml(product.description)}
+                            </p>
+                          )}
                         </div>
 
                         <div>
@@ -509,6 +626,11 @@ const Shop = () => {
                           <BiGift size={40} color="var(--tet-lucky-red)" />
                         </div>
                       </div>
+                      {selectedProduct.description && (
+                        <div className="mt-3 pt-3 border-top product-description-full ql-snow" style={{ fontSize: '0.95rem' }}>
+                          <div className="ql-editor p-0" dangerouslySetInnerHTML={{ __html: selectedProduct.description }} />
+                        </div>
+                      )}
                     </div>
                     <form onSubmit={handleSubmit}>
                       <div className="mb-4">

@@ -25,7 +25,8 @@ import {
   BiCheck,
   BiImage,
   BiShoppingBag,
-  BiShow
+  BiShow,
+  BiCalendar
 } from 'react-icons/bi';
 
 const Admin = () => {
@@ -75,6 +76,10 @@ const Admin = () => {
   });
   const [selectedContact, setSelectedContact] = useState(null);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [topDateRange, setTopDateRange] = useState({
+    start: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
+    end: new Date().toISOString().split('T')[0]
+  });
   const [stats, setStats] = useState({
     pendingOrders: 0,
     monthlyOrders: 0,
@@ -123,6 +128,12 @@ const Admin = () => {
       const productCounts = {};
       const userSpending = {};
 
+      const topStartDate = topDateRange.start ? new Date(topDateRange.start) : null;
+      if (topStartDate) topStartDate.setHours(0, 0, 0, 0);
+      
+      const topEndDate = topDateRange.end ? new Date(topDateRange.end) : null;
+      if (topEndDate) topEndDate.setHours(23, 59, 59, 999);
+
       const last7Days = [...Array(7)].map((_, i) => {
         const d = new Date();
         d.setDate(d.getDate() - i);
@@ -144,7 +155,18 @@ const Admin = () => {
           productCounts[pName] = (productCounts[pName] || 0) + 1;
 
           const username = order.mc_username || 'Ẩn danh';
-          userSpending[username] = (userSpending[username] || 0) + price;
+          
+          let shouldIncludeInTop = true;
+          if (topStartDate && orderDate < topStartDate) {
+            shouldIncludeInTop = false;
+          }
+          if (topEndDate && orderDate > topEndDate) {
+            shouldIncludeInTop = false;
+          }
+          
+          if (shouldIncludeInTop) {
+            userSpending[username] = (userSpending[username] || 0) + price;
+          }
         }
 
         if (orderDate.getFullYear() === currentYear) {
@@ -219,6 +241,12 @@ const Admin = () => {
       });
     }
   }, [isAuthenticated, navigate, serverStatus, siteSettings]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadDashboardStats();
+    }
+  }, [topDateRange]);
 
   const unresolvedContactsCount = contacts.filter(c => c.status !== 'resolved').length;
   const unreadCount = contacts.filter(c => !c.read).length;
@@ -522,6 +550,36 @@ const Admin = () => {
                   <div className="col-12 col-lg-4">
                     <div className="admin-card tet-glass p-4 mb-4">
                       <h5 className="mb-4" style={{ color: 'var(--tet-lucky-red-dark)', fontWeight: 700 }}>Top Nạp</h5>
+                      
+                      <div className="d-flex flex-column gap-2 mb-4">
+                        <div>
+                          <label className="d-block mb-1 small fw-bold text-muted">Từ ngày</label>
+                          <div className="position-relative">
+                            <input 
+                              type="date" 
+                              className="tet-input w-100 pe-5 py-1"
+                              value={topDateRange.start}
+                              onChange={(e) => setTopDateRange({ ...topDateRange, start: e.target.value })}
+                              style={{ fontSize: '0.85rem' }}
+                            />
+                            <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-2 text-muted" style={{ pointerEvents: 'none' }} />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="d-block mb-1 small fw-bold text-muted">Đến ngày</label>
+                          <div className="position-relative">
+                            <input 
+                              type="date" 
+                              className="tet-input w-100 pe-5 py-1"
+                              value={topDateRange.end}
+                              onChange={(e) => setTopDateRange({ ...topDateRange, end: e.target.value })}
+                              style={{ fontSize: '0.85rem' }}
+                            />
+                            <BiCalendar className="position-absolute top-50 end-0 translate-middle-y me-2 text-muted" style={{ pointerEvents: 'none' }} />
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="list-unstyled">
                         {stats.topDonators.map((user, i) => (
                           <div key={i} className="mb-2 d-flex justify-content-between align-items-center p-2 rounded" style={{ background: 'rgba(255, 215, 0, 0.05)', borderLeft: '3px solid var(--tet-gold)' }}>
