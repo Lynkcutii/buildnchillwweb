@@ -595,10 +595,53 @@ const Shop = () => {
             )}
           </AnimatePresence>
 
-          <div className="row g-4">
-            <div className="col-lg-9 order-1">
-              {/* Danh Mục - Ngang */}
-              <div className="tet-glass p-3 mb-4" style={{ overflow: 'visible' }}>
+          {/* Top Nạp - Chỉ hiển thị trên Mobile (Ở trên cùng) */}
+          <div className="row mb-4 d-lg-none">
+            <div className="col-12">
+              <div className="tet-glass p-3">
+                <h4 className="tet-section-title mb-3" style={{ color: 'var(--tet-gold-dark)', fontSize: '1.2rem' }}>
+                  <BiStar /> Top Nạp
+                </h4>
+                
+                <div className="d-flex flex-column gap-2 mb-3 bg-white p-2 rounded shadow-sm">
+                  <TetDatePicker 
+                    label="Từ ngày"
+                    value={dateRange.start}
+                    onChange={(val) => setDateRange({ ...dateRange, start: val })}
+                  />
+                  <TetDatePicker 
+                    label="Đến ngày"
+                    value={dateRange.end}
+                    onChange={(val) => setDateRange({ ...dateRange, end: val })}
+                  />
+                </div>
+
+                <div className="list-unstyled d-flex flex-column gap-2 top-nap-list">
+                  {loadingTop ? (
+                    <div className="text-center py-3">
+                      <div className="spinner-border text-danger spinner-border-sm" role="status"></div>
+                    </div>
+                  ) : topDonators.slice(0, 3).map((user, i) => (
+                    <div key={i} className={`rank-item d-flex align-items-center p-2 rounded ${user.rank === 1 ? 'top-1' : user.rank === 2 ? 'top-2' : 'top-3'}`}>
+                      <div className="rank-badge" style={{ width: '20px', height: '20px', fontSize: '0.7rem' }}>{user.rank}</div>
+                      <div className="player-avatar me-2">
+                        <img src={`https://mc-heads.net/avatar/${user.name}/24`} alt={user.name} style={{ width: '24px', height: '24px' }} />
+                      </div>
+                      <div className="player-info flex-grow-1">
+                        <div className="player-name text-truncate" style={{ fontSize: '0.8rem' }}>{user.name}</div>
+                        <div className="recharge-amount" style={{ fontSize: '0.7rem' }}>{user.total.toLocaleString('vi-VN')} VNĐ</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Danh Mục - Ngang chiếm trọn chiều ngang */}
+          <div className="row mb-4">
+            <div className="col-12">
+              <div className="tet-glass p-3" style={{ overflow: 'visible' }}>
                 <div className="d-flex align-items-center gap-3 mb-3">
                   <h5 className="tet-section-title m-0" style={{ fontSize: '1.2rem', whiteSpace: 'nowrap' }}>
                     Danh Mục
@@ -621,7 +664,11 @@ const Shop = () => {
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
 
+          <div className="row g-4">
+            <div className="col-lg-9">
               {/* Sản Phẩm */}
               <div className="row g-4 mb-5">
                 {filteredProducts.map(product => (
@@ -777,7 +824,8 @@ const Shop = () => {
               </div>
             </div>
 
-            <div className="col-lg-3 order-2 order-lg-3">
+            {/* Top Nạp - Chỉ hiển thị trên PC (Sidebar) */}
+            <div className="col-lg-3 d-none d-lg-block">
               <div className="tet-glass p-4 sticky-top" style={{ top: '100px', overflow: 'visible', zIndex: 5 }}>
                 <h4 className="tet-section-title mb-3" style={{ color: 'var(--tet-gold-dark)' }}>
                   <BiStar /> Top Nạp
@@ -800,7 +848,6 @@ const Shop = () => {
                   {loadingTop ? (
                     <div className="text-center py-5">
                       <div className="spinner-border text-danger spinner-border-sm" role="status"></div>
-                      <div className="mt-2 text-muted small">Đang cập nhật...</div>
                     </div>
                   ) : topDonators.map((user, i) => (
                     <motion.div 

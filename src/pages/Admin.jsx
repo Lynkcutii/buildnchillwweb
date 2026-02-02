@@ -422,7 +422,10 @@ const Admin = () => {
     }
   };
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = async () => { 
+    await logout(); 
+    navigate('/'); 
+  };
 
   if (!isAuthenticated) return null;
 
