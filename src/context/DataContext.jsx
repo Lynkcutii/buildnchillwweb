@@ -30,6 +30,7 @@ export const DataProvider = ({ children }) => {
     site_title: 'BuildnChill',
     maintenance_mode: false
   });
+  const [carouselImages, setCarouselImages] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
@@ -117,22 +118,38 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const updatePassword = async (newPassword) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Update password error:', error);
+      return false;
+    }
+  };
+
   const loadData = async (profile) => {
     try {
       const newsPromise = supabase.from('news').select('*').eq('is_deleted', false).order('date', { ascending: false });
       const settingsPromise = supabase.from('site_settings').select('*').eq('id', 1).maybeSingle();
       const statusPromise = supabase.from('server_status').select('*').eq('id', 1).maybeSingle();
       const contactsPromise = supabase.from('contacts').select('*').eq('is_deleted', false).order('created_at', { ascending: false });
+      const carouselPromise = supabase.from('carousel_images').select('*').order('display_order', { ascending: true });
 
-      const [newsRes, settingsRes, statusRes, contactsRes] = await Promise.all([
+      const [newsRes, settingsRes, statusRes, contactsRes, carouselRes] = await Promise.all([
         newsPromise, 
         settingsPromise, 
         statusPromise,
-        contactsPromise
+        contactsPromise,
+        carouselPromise
       ]);
 
       if (newsRes.data) setNews(newsRes.data.map(item => ({ ...item, slug: item.slug || slugify(item.title) })));
       if (contactsRes.data) setContacts(contactsRes.data);
+      if (carouselRes.data) setCarouselImages(carouselRes.data);
       if (settingsRes.data) {
         setSiteSettings(settingsRes.data);
         // Sau khi có settings (đặc biệt là server_ip), thử cập nhật trạng thái thực tế
@@ -322,6 +339,55 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  // Carousel Management
+  const addCarouselImage = async (imageData) => {
+    try {
+      const { data, error } = await supabase
+        .from('carousel_images')
+        .insert([imageData])
+        .select();
+
+      if (error) throw error;
+      setCarouselImages(prev => [...prev, data[0]]);
+      return true;
+    } catch (error) {
+      console.error('Error adding carousel image:', error);
+      return false;
+    }
+  };
+
+  const updateCarouselImage = async (id, imageData) => {
+    try {
+      const { error } = await supabase
+        .from('carousel_images')
+        .update(imageData)
+        .eq('id', id);
+
+      if (error) throw error;
+      setCarouselImages(prev => prev.map(img => img.id === id ? { ...img, ...imageData } : img));
+      return true;
+    } catch (error) {
+      console.error('Error updating carousel image:', error);
+      return false;
+    }
+  };
+
+  const deleteCarouselImage = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('carousel_images')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      setCarouselImages(prev => prev.filter(img => img.id !== id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting carousel image:', error);
+      return false;
+    }
+  };
+
   const submitContact = async (contactData) => {
     try {
       let image_url = null;
@@ -461,6 +527,12 @@ export const DataProvider = ({ children }) => {
       window.dispatchEvent(new CustomEvent('orders_updated'));
     }).subscribe();
 
+    const carouselChannel = supabase.channel('carousel_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'carousel_images' }, () => {
+      supabase.from('carousel_images').select('*').order('display_order', { ascending: true }).then(({ data }) => {
+        if (data) setCarouselImages(data);
+      });
+    }).subscribe();
+
     return () => {
       if (authSubscription) authSubscription.unsubscribe();
       if (statusInterval) clearInterval(statusInterval);
@@ -470,16 +542,19 @@ export const DataProvider = ({ children }) => {
       supabase.removeChannel(walletChannel);
       supabase.removeChannel(rechargeChannel);
       supabase.removeChannel(orderChannel);
+      supabase.removeChannel(carouselChannel);
     };
   }, [user?.id, siteSettings?.server_ip]);
 
   return (
     <DataContext.Provider value={{
-      news, serverStatus, contacts, siteSettings,
+      news, serverStatus, contacts, siteSettings, carouselImages,
       isAuthenticated, user, userProfile, loading,
       fetchUserProfile, login, register, logout, refreshMinecraftStatus,
       addNews, updateNews, deleteNews, updateServerStatus, updateSiteSettings,
-      markContactAsRead, updateContactStatus, deleteContact, submitContact
+      markContactAsRead, updateContactStatus, deleteContact, submitContact,
+      updatePassword,
+      addCarouselImage, updateCarouselImage, deleteCarouselImage
     }}>
       {children}
     </DataContext.Provider>

@@ -110,6 +110,7 @@ const Contact = () => {
         <meta name="description" content="Bạn cần hỗ trợ? Gửi yêu cầu báo lỗi, góp ý hoặc báo cáo người chơi tại trang liên hệ của BuildnChill." />
         <meta property="og:title" content="Liên Hệ Hỗ Trợ - BuildnChill" />
         <meta property="og:description" content="Đội ngũ hỗ trợ của BuildnChill luôn sẵn sàng giải đáp thắc mắc của bạn." />
+        <meta property="og:image" content="https://media.discordapp.net/attachments/1318780761880658030/1467738661251580092/image.png?ex=698179a6&is=69802826&hm=ac1c46e7d28ebd7744c810b1e59f59e59eb24d55975d76d2627a642c0a2d117f&=&format=webp&quality=lossless" />
       </Helmet>
       <div className="container my-5">
         <motion.div

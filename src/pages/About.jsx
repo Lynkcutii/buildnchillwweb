@@ -40,6 +40,7 @@ const About = () => {
         <meta name="description" content="Tìm hiểu về BuildnChill, một cộng đồng Minecraft thân thiện, sáng tạo và luôn chào đón mọi người chơi." />
         <meta property="og:title" content="Giới Thiệu BuildnChill" />
         <meta property="og:description" content="Khám phá giá trị cốt lõi và những gì BuildnChill mang lại cho cộng đồng Minecraft Việt Nam." />
+        <meta property="og:image" content="https://media.discordapp.net/attachments/1318780761880658030/1467738661251580092/image.png?ex=698179a6&is=69802826&hm=ac1c46e7d28ebd7744c810b1e59f59e59eb24d55975d76d2627a642c0a2d117f&=&format=webp&quality=lossless" />
       </Helmet>
       <div className="container my-5">
         <motion.div

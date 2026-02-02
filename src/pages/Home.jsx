@@ -16,7 +16,7 @@ const Home = () => {
   const serverIp = siteSettings?.server_ip || 'buildnchill.id.vn';
 
   const carouselImages = [
-    'https://media.discordapp.net/attachments/1318780761880658030/1459010017905737759/Generated_Image_January_09_2026_-_9_21AM_LE_upscale_balanced.jpg?ex=6961b877&is=696066f7&hm=8575353526785f2d034385187431d268de58b412681a9904bce0564360fccc93&=&format=webp&width=743&height=291',
+    'https://media.discordapp.net/attachments/1318780761880658030/1467738661251580092/image.png?ex=698179a6&is=69802826&hm=ac1c46e7d28ebd7744c810b1e59f59e59eb24d55975d76d2627a642c0a2d117f&=&format=webp&quality=lossless',
     'https://foodtek.vn/sites/default/files/2025-12/462570011_607189315167864_5786208777291669050_n.webp',
     'https://foodtek.vn/sites/default/files/2025-12/467459402_525799813831572_2048064753693338637_n.webp',
     'https://foodtek.vn/sites/default/files/2025-12/467457844_1958845277932349_4464426894527163495_n.webp',

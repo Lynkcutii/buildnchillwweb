@@ -1,3 +1,6 @@
+-- 0. Enable extensions
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- 1. Create Profiles table (if not exists)
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
@@ -219,3 +222,47 @@ EXCEPTION WHEN OTHERS THEN
     );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 10. RPC: Admin Force Update User Password
+-- This allows an admin (checked via profiles.role) to update any user's password
+CREATE OR REPLACE FUNCTION public.admin_force_update_password(
+    p_user_id UUID,
+    p_new_password TEXT
+) RETURNS JSONB AS $$
+DECLARE
+    v_admin_role TEXT;
+BEGIN
+    -- Check if the executor is an admin
+    SELECT role INTO v_admin_role FROM public.profiles WHERE id = auth.uid();
+    
+    IF v_admin_role != 'admin' THEN
+        RETURN jsonb_build_object('success', false, 'message', 'Unauthorized: Only admins can perform this action');
+    END IF;
+
+    -- Update the password in auth.users
+    -- This requires the function to be SECURITY DEFINER and have permissions
+    UPDATE auth.users 
+    SET encrypted_password = crypt(p_new_password, gen_salt('bf'))
+    WHERE id = p_user_id;
+
+    RETURN jsonb_build_object('success', true, 'message', 'Password updated successfully');
+EXCEPTION WHEN OTHERS THEN
+    RETURN jsonb_build_object('success', false, 'message', SQLERRM);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 11. Create Carousel Images table
+CREATE TABLE IF NOT EXISTS public.carousel_images (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    image_url TEXT NOT NULL,
+    display_order INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS for Carousel Images
+ALTER TABLE public.carousel_images ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public can see active carousel images" ON public.carousel_images FOR SELECT USING (is_active = true);
+CREATE POLICY "Admin can manage all carousel images" ON public.carousel_images FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);

@@ -1,15 +1,25 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BiWallet, BiHistory, BiUser, BiPlusCircle, BiLogOut, BiX, BiUpload, BiCheckCircle, BiQrScan, BiCreditCard } from 'react-icons/bi';
+import { BiWallet, BiHistory, BiUser, BiPlusCircle, BiLogOut, BiX, BiUpload, BiCheckCircle, BiQrScan, BiCreditCard, BiLockAlt } from 'react-icons/bi';
 import TetEffect from '../components/TetEffect';
+import { useData } from '../context/DataContext';
 
 const Profile = () => {
+  const { updatePassword } = useData();
   const [profile, setProfile] = useState(null);
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showRechargeModal, setShowRechargeModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  
+  // Password form state
+  const [passwordForm, setPasswordForm] = useState({
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [updatingPassword, setUpdatingPassword] = useState(false);
   
   // Recharge form state
   const [rechargeForm, setRechargeForm] = useState({
@@ -21,7 +31,7 @@ const Profile = () => {
   const [rechargeHistory, setRechargeHistory] = useState([]);
 
   const paymentInfo = {
-    bank_account: '0379981206',
+    bank_account: '0000865746243',
     bank_name: 'MBBank',
     account_name: 'LE DUC TRONG'
   };
@@ -125,6 +135,34 @@ const Profile = () => {
     }
   };
 
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      alert('Mật khẩu xác nhận không khớp!');
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      alert('Mật khẩu phải có ít nhất 6 ký tự!');
+      return;
+    }
+
+    setUpdatingPassword(true);
+    try {
+      const success = await updatePassword(passwordForm.newPassword);
+      if (success) {
+        alert('Cập nhật mật khẩu thành công!');
+        setShowPasswordModal(false);
+        setPasswordForm({ newPassword: '', confirmPassword: '' });
+      } else {
+        alert('Cập nhật mật khẩu thất bại. Vui lòng thử lại sau.');
+      }
+    } catch (error) {
+      alert('Lỗi: ' + error.message);
+    } finally {
+      setUpdatingPassword(false);
+    }
+  };
+
   if (loading) return <div className="text-center py-5 mt-5"><div className="spinner-border text-danger"></div></div>;
 
   return (
@@ -152,6 +190,7 @@ const Profile = () => {
 
               <div className="d-grid gap-2">
                 <button onClick={() => setShowRechargeModal(true)} className="tet-button-shop py-3"><BiPlusCircle className="me-2" /> Nạp tiền vào ví</button>
+                <button onClick={() => setShowPasswordModal(true)} className="tet-button-outline py-2"><BiLockAlt className="me-2" /> Đổi mật khẩu</button>
                 <button onClick={handleLogout} className="btn btn-link text-muted btn-sm"><BiLogOut className="me-1" /> Đăng xuất tài khoản</button>
               </div>
             </motion.div>
@@ -331,6 +370,55 @@ const Profile = () => {
                   </form>
                 </div>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Password Modal */}
+      <AnimatePresence>
+        {showPasswordModal && (
+          <div className="modal-backdrop-custom d-flex align-items-center justify-content-center p-3" style={{ zIndex: 9999 }}>
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.9, opacity: 0 }} 
+              className="tet-glass p-4 w-100 shadow-lg border-2" 
+              style={{ maxWidth: '400px', backgroundColor: 'white', border: '2px solid var(--tet-gold)' }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h4 className="fw-black m-0 text-danger"><BiLockAlt className="me-2" /> Đổi Mật Khẩu</h4>
+                <button onClick={() => setShowPasswordModal(false)} className="btn btn-link text-dark p-0"><BiX size={30} /></button>
+              </div>
+
+              <form onSubmit={handlePasswordSubmit}>
+                <div className="mb-3">
+                  <label className="small fw-bold mb-1">Mật khẩu mới</label>
+                  <input 
+                    type="password" 
+                    className="tet-input" 
+                    placeholder="Tối thiểu 6 ký tự" 
+                    value={passwordForm.newPassword} 
+                    onChange={e => setPasswordForm({...passwordForm, newPassword: e.target.value})} 
+                    required 
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="small fw-bold mb-1">Xác nhận mật khẩu</label>
+                  <input 
+                    type="password" 
+                    className="tet-input" 
+                    placeholder="Nhập lại mật khẩu mới" 
+                    value={passwordForm.confirmPassword} 
+                    onChange={e => setPasswordForm({...passwordForm, confirmPassword: e.target.value})} 
+                    required 
+                  />
+                </div>
+                <button type="submit" className="tet-button-shop w-100 py-3" disabled={updatingPassword}>
+                  {updatingPassword ? <span className="spinner-border spinner-border-sm me-2"></span> : <BiCheckCircle className="me-1" />}
+                  {updatingPassword ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
+                </button>
+              </form>
             </motion.div>
           </div>
         )}

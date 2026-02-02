@@ -45,7 +45,7 @@ const Shop = () => {
   const [loadingTop, setLoadingTop] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState({
     qr_code: '',
-    bank_account: '0379981206',
+    bank_account: '0000865746243',
     bank_name: 'MBBank',
     account_name: 'LE DUC TRONG'
   });
@@ -450,7 +450,7 @@ const Shop = () => {
         <meta name="description" content="Mua sắm vật phẩm Minecraft, Rank, Xu và nhiều gói quà hấp dẫn tại BuildnChill Shop. Thanh toán nhanh chóng, nhận quà tức thì." />
         <meta property="og:title" content="Cửa Hàng Minecraft - BuildnChill Shop" />
         <meta property="og:description" content="Nâng cấp trải nghiệm chơi game của bạn với các vật phẩm độc quyền tại BuildnChill." />
-        <meta property="og:image" content="https://foodtek.vn/sites/default/files/2025-12/462570011_607189315167864_5786208777291669050_n.webp" />
+        <meta property="og:image" content="https://media.discordapp.net/attachments/1318780761880658030/1467738661251580092/image.png?ex=698179a6&is=69802826&hm=ac1c46e7d28ebd7744c810b1e59f59e59eb24d55975d76d2627a642c0a2d117f&=&format=webp&quality=lossless" />
         <meta name="keywords" content="shop minecraft, mua rank minecraft, nap xu minecraft, buildnchill shop" />
       </Helmet>
       <TetEffect />

@@ -17,7 +17,7 @@ const Recharge = () => {
   });
 
   const paymentInfo = {
-    bank_account: '0379981206',
+    bank_account: '0000865746243',
     bank_name: 'MBBank',
     account_name: 'LE DUC TRONG'
   };

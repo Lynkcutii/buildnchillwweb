@@ -9,6 +9,8 @@ import TetEffect from '../components/TetEffect';
 import ShopCategoriesManagement from '../components/ShopCategoriesManagement';
 import ShopProductsManagement from '../components/ShopProductsManagement';
 import ShopOrdersManagement from '../components/ShopOrdersManagement';
+import UserManagement from '../components/UserManagement';
+import CarouselManagement from '../components/CarouselManagement';
 import WalletManagement from '../components/WalletManagement';
 import RechargeManagement from '../components/RechargeManagement';
 import TetDatePicker from '../components/TetDatePicker';
@@ -29,6 +31,7 @@ import {
   BiCheck,
   BiImage,
   BiShoppingBag,
+  BiUser,
   BiShow,
   BiCalendar,
   BiStar,
@@ -425,12 +428,14 @@ const Admin = () => {
 
   const tabs = [
     { id: 'dashboard', label: 'Bảng Điều Khiển', icon: BiBarChart },
+    { id: 'users', label: 'Người Dùng', icon: BiUser },
     { id: 'categories', label: 'Danh Mục', icon: BiCog },
     { id: 'products', label: 'Sản Phẩm', icon: BiShoppingBag },
     { id: 'orders', label: 'Đơn Hàng', icon: BiCheckCircle },
     { id: 'recharges', label: 'Duyệt Nạp', icon: BiCreditCard },
     { id: 'wallets', label: 'Quản Lý Ví', icon: BiWallet },
     { id: 'news', label: 'Tin Tức', icon: BiNews },
+    { id: 'carousel', label: 'Carousel', icon: BiImage },
     { id: 'contacts', label: 'Liên Hệ', icon: BiEnvelope },
     { id: 'server', label: 'Trạng Thái Server', icon: BiServer },
     { id: 'settings', label: 'Cài Đặt', icon: BiCog }
@@ -785,6 +790,19 @@ const Admin = () => {
                     ))}</tbody>
                   </table>
                 </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'carousel' && (
+              <motion.div key="carousel" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <CarouselManagement />
+              </motion.div>
+            )}
+
+            {activeTab === 'users' && (
+              <motion.div key="users" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <h1 className="tet-section-title mb-4">Quản Lý Người Dùng</h1>
+                <UserManagement />
               </motion.div>
             )}
 

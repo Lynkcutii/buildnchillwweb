@@ -66,7 +66,7 @@ const News = () => {
         <meta name="description" content="Cập nhật những tin tức mới nhất, sự kiện hấp dẫn và các bản cập nhật quan trọng từ máy chủ Minecraft BuildnChill." />
         <meta property="og:title" content="Tin Tức & Sự Kiện - BuildnChill" />
         <meta property="og:description" content="Đừng bỏ lỡ các thông tin quan trọng về cộng đồng Minecraft BuildnChill." />
-        <meta property="og:image" content="https://foodtek.vn/sites/default/files/2025-12/467459402_525799813831572_2048064753693338637_n.webp" />
+        <meta property="og:image" content="https://media.discordapp.net/attachments/1318780761880658030/1467738661251580092/image.png?ex=698179a6&is=69802826&hm=ac1c46e7d28ebd7744c810b1e59f59e59eb24d55975d76d2627a642c0a2d117f&=&format=webp&quality=lossless" />
         <meta name="keywords" content="tin tuc minecraft, su kien minecraft, buildnchill news" />
       </Helmet>
       <div className="container my-5">
