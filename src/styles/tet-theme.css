@@ -647,10 +647,10 @@ h3 {
    NEWS & CONTENT
    ============================================ */
 
-.news-content, .news-content.ql-editor {
-  color: var(--tet-text-charcoal) !important;
-  font-size: 1.1rem !important;
-  line-height: 1.8 !important;
+.news-content {
+  color: var(--tet-text-charcoal);
+  font-size: 1.1rem;
+  line-height: 1.7;
 }
 
 .news-content h1,
@@ -658,51 +658,24 @@ h3 {
 .news-content h3,
 .news-content h4,
 .news-content h5 {
-  color: var(--tet-lucky-red-dark) !important;
-  font-weight: 800 !important;
-  margin-top: 2rem !important;
-  margin-bottom: 1.2rem !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  border-bottom: 2px solid rgba(215, 0, 24, 0.1) !important;
-  padding-bottom: 0.5rem !important;
-}
-
-.news-content h1::before,
-.news-content h2::before,
-.news-content h3::before {
-  content: "🧧" !important;
-  font-size: 1.4rem !important;
+  color: var(--tet-lucky-red-dark);
+  font-weight: 800;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .news-content p {
-  margin-bottom: 1.2rem !important;
-  color: var(--tet-text-charcoal) !important;
+  margin-bottom: 1rem;
 }
 
 .news-content ul,
 .news-content ol {
-  background: rgba(255, 255, 255, 0.7) !important;
-  border: 2px solid var(--tet-gold) !important;
-  border-radius: 16px !important;
-  padding: 1.5rem 1.5rem 1.5rem 3rem !important;
-  margin: 1.5rem 0 !important;
-  box-shadow: var(--tet-shadow-medium) !important;
-  list-style-position: outside !important;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
 }
 
 .news-content li {
-  margin-bottom: 0.8rem !important;
-  position: relative !important;
-  color: var(--tet-text-dark) !important;
-  font-weight: 500 !important;
-}
-
-.news-content li::marker {
-  color: var(--tet-lucky-red) !important;
-  font-weight: bold !important;
-  font-size: 1.2rem !important;
+  margin-bottom: 0.3rem;
 }
 
 .news-content a {
@@ -720,25 +693,19 @@ h3 {
 }
 
 .news-content img {
-  max-width: 100% !important;
-  height: auto !important;
-  border-radius: 12px !important;
-  border: 3px solid var(--tet-gold) !important;
-  box-shadow: var(--tet-shadow-medium) !important;
-  margin: 1.5rem auto !important;
-  display: block !important;
-  object-fit: contain !important;
-  background: rgba(255, 255, 255, 0.5) !important;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem auto;
+  display: block;
 }
 
-/* Specific styling for the "cards" or sections within content */
 .news-content blockquote {
-  border-left: 5px solid var(--tet-lucky-red) !important;
-  background: rgba(215, 0, 24, 0.05) !important;
-  padding: 1rem 1.5rem !important;
-  border-radius: 0 12px 12px 0 !important;
-  margin: 1.5rem 0 !important;
-  font-style: italic !important;
+  border-left: 5px solid var(--tet-lucky-red);
+  background: rgba(215, 0, 24, 0.05);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
 }
 
 /* ============================================
@@ -1134,31 +1101,33 @@ h3,
 .admin-top-nav-menu {
   display: flex !important;
   flex-wrap: wrap !important;
-  gap: 0.4rem !important;
+  gap: 0.6rem !important;
   justify-content: center !important;
-  margin-bottom: 0.8rem !important;
+  margin-bottom: 1rem !important;
+  padding: 0 0.5rem !important;
 }
 
 .admin-top-nav-item {
   background: rgba(255, 255, 255, 0.15) !important;
   border: 1px solid rgba(255, 215, 0, 0.3) !important;
-  border-radius: 8px !important;
-  padding: 0.5rem !important;
+  border-radius: 10px !important;
+  padding: 0.6rem !important;
   color: white !important;
   cursor: pointer !important;
   transition: all 0.3s !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  min-width: 42px !important;
-  height: 42px !important;
+  min-width: 48px !important;
+  height: 48px !important;
 }
 
 .admin-top-nav-item.active {
   background: var(--tet-gold) !important;
   color: var(--tet-lucky-red) !important;
   border-color: white !important;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6) !important;
+  transform: scale(1.1);
 }
 
 .admin-top-nav-label {
@@ -1167,6 +1136,73 @@ h3,
 
 .admin-top-nav-footer {
   text-align: center !important;
-  padding-top: 0.8rem !important;
+  padding: 1rem !important;
   border-top: 1px solid rgba(255, 215, 0, 0.2) !important;
+}
+
+/* ============================================
+   CUSTOM TABLE & SCROLLBAR
+   ============================================ */
+
+.tet-scroll-custom::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.tet-scroll-custom::-webkit-scrollbar-track {
+  background: rgba(215, 0, 24, 0.05);
+  border-radius: 10px;
+}
+.tet-scroll-custom::-webkit-scrollbar-thumb {
+  background: var(--tet-lucky-red);
+  border-radius: 10px;
+}
+
+.tet-table {
+  border-collapse: separate !important;
+  border-spacing: 0 10px !important;
+  background: transparent !important;
+  margin-top: -10px !important;
+}
+
+.tet-table thead th {
+  background: var(--tet-lucky-red) !important;
+  color: white !important;
+  border: none !important;
+  padding: 15px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-size: 0.85rem !important;
+}
+
+.tet-table thead th:first-child { border-radius: 12px 0 0 12px !important; }
+.tet-table thead th:last-child { border-radius: 0 12px 12px 0 !important; }
+
+.tet-table tbody tr {
+  background: white !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  transition: all 0.3s ease !important;
+  border-radius: 12px !important;
+}
+
+.tet-table tbody tr:hover {
+  transform: translateY(-3px) scale(1.01) !important;
+  box-shadow: 0 8px 25px rgba(215, 0, 24, 0.15) !important;
+  z-index: 5 !important;
+  position: relative !important;
+}
+
+.tet-table td {
+  border: none !important;
+  padding: 15px !important;
+  background: white !important;
+}
+
+.tet-table td:first-child { border-radius: 12px 0 0 12px !important; }
+.tet-table td:last-child { border-radius: 0 12px 12px 0 !important; }
+
+@media (max-width: 768px) {
+  .tet-table {
+    min-width: 700px !important;
+  }
 }

@@ -69,7 +69,7 @@ const Home = () => {
         <meta property="og:description" content={`Tham gia cộng đồng Minecraft lớn mạnh nhất tại ${serverIp}. Nhiều chế độ chơi hấp dẫn đang chờ bạn!`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.buildnchill.id.vn" />
-        <meta property="og:image" content="https://foodtek.vn/sites/default/files/2025-12/2025-12-19_23.28.20.webp" />
+        <meta property="og:image" content="https://media.discordapp.net/attachments/1318780761880658030/1467738661251580092/image.png?ex=698179a6&is=69802826&hm=ac1c46e7d28ebd7744c810b1e59f59e59eb24d55975d76d2627a642c0a2d117f&=&format=webp&quality=lossless" />
         <meta name="keywords" content="minecraft, server minecraft, minecraft viet nam, buildnchill, play minecraft, minecraft 1.20.4" />
       </Helmet>
 

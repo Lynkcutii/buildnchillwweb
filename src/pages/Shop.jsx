@@ -596,31 +596,36 @@ const Shop = () => {
           </AnimatePresence>
 
           <div className="row g-4">
-            <div className="col-lg-2 order-1 order-lg-1 mb-4">
-              <div className="tet-glass p-3 sticky-top" style={{ top: '100px', zIndex: 5 }}>
-                <h5 className="tet-section-title mb-4" style={{ fontSize: '1.2rem' }}>
-                  Danh Mục
-                </h5>
-                <div className="d-flex flex-column gap-2">
+            <div className="col-lg-9 order-1">
+              {/* Danh Mục - Ngang */}
+              <div className="tet-glass p-3 mb-4" style={{ overflow: 'visible' }}>
+                <div className="d-flex align-items-center gap-3 mb-3">
+                  <h5 className="tet-section-title m-0" style={{ fontSize: '1.2rem', whiteSpace: 'nowrap' }}>
+                    Danh Mục
+                  </h5>
+                  <div className="flex-grow-1" style={{ height: '2px', background: 'var(--tet-gradient-1)', opacity: 0.3 }}></div>
+                </div>
+                <div className="d-flex flex-row flex-wrap gap-2">
                   {categories.map(cat => (
                     <motion.button
                       key={cat.id}
-                      className={`tet-category-btn ${selectedCategory === cat.id ? 'active' : ''}`}
+                      className={`tet-category-btn-horizontal ${selectedCategory === cat.id ? 'active' : ''}`}
                       onClick={() => handleCategoryChange(cat.id)}
                       whileTap={{ scale: 0.95 }}
-                      style={{ padding: '10px 15px', fontSize: '0.9rem' }}
                     >
-                      {cat.name.includes('VIP') ? '👑' : cat.name.includes('ITEM') ? '📦' : '🏮'} {cat.name}
+                      <span className="category-icon">
+                        {cat.name.includes('VIP') ? '👑' : cat.name.includes('ITEM') ? '📦' : '🏮'}
+                      </span>
+                      <span className="category-name">{cat.name}</span>
                     </motion.button>
                   ))}
                 </div>
               </div>
-            </div>
 
-            <div className="col-lg-7 order-3 order-lg-2">
+              {/* Sản Phẩm */}
               <div className="row g-4 mb-5">
                 {filteredProducts.map(product => (
-                  <div key={product.id} className="col-md-6">
+                  <div key={product.id} className="col-md-6 col-xl-4">
                     <motion.div
                       className={`tet-product-card ${selectedProduct?.id === product.id ? 'selected' : ''}`}
                       onClick={() => handleProductSelect(product)}

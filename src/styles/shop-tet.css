@@ -208,45 +208,59 @@
   z-index: 2;
 }
 
-/* Category Buttons */
-.tet-category-btn {
+/* Category Buttons Horizontal */
+.tet-category-btn-horizontal {
   background: white;
-  border: 2px solid rgba(215, 0, 24, 0.2);
+  border: 2px solid rgba(215, 0, 24, 0.15);
   color: var(--tet-lucky-red-dark);
-  padding: 12px 20px;
+  padding: 10px 20px;
   border-radius: 12px;
   font-weight: 700;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-align: left;
-  position: relative;
-  overflow: hidden;
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-size: 0.9rem;
 }
 
-.tet-category-btn:hover {
+.tet-category-btn-horizontal:hover {
   border-color: var(--tet-lucky-red);
   background: rgba(215, 0, 24, 0.02);
-  transform: translateX(5px);
-  box-shadow: var(--tet-shadow-soft);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(215, 0, 24, 0.1);
 }
 
-.tet-category-btn.active {
+.tet-category-btn-horizontal.active {
   background: var(--tet-gradient-1);
   border-color: var(--tet-gold);
   color: white;
-  box-shadow: var(--tet-shadow-medium), 0 0 15px rgba(255, 215, 0, 0.3);
-  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(215, 0, 24, 0.2);
+  transform: none; /* Loại bỏ việc bị đẩy lên cao */
+  z-index: 2;
 }
 
-.tet-category-btn.active::after {
-  content: "🧧";
+.tet-category-btn-horizontal.active::after {
+  content: "✨";
   position: absolute;
-  right: 10px;
-  font-size: 1.2rem;
-  animation: bounceRight 2s infinite;
+  top: -10px;
+  right: -5px;
+  font-size: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.tet-category-btn-horizontal.active::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: var(--tet-gold);
+  border-radius: 10px;
+  box-shadow: 0 0 10px var(--tet-gold);
 }
 
 @keyframes bounceRight {

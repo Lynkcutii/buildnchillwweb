@@ -163,28 +163,29 @@ const RechargeManagement = () => {
   );
 
   return (
-    <div className="recharge-management">
-      <div className="admin-card tet-glass p-4 mb-4">
+    <div className="recharge-management px-2 px-md-0">
+      <div className="admin-card tet-glass p-3 p-md-4 mb-4">
         <div className="row g-3 align-items-center">
-          <div className="col-md-4">
+          <div className="col-12 col-md-4">
             <div className="input-group">
               <span className="input-group-text bg-transparent border-end-0"><BiSearch /></span>
               <input 
                 type="text" 
-                className="tet-input ps-0" 
+                className="tet-input ps-0 w-100" 
                 placeholder="Tìm tên nhân vật..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-          <div className="col-md-8 text-md-end">
-            <div className="btn-group">
+          <div className="col-12 col-md-8 text-md-end">
+            <div className="d-flex flex-wrap justify-content-md-end gap-2">
               {['pending', 'approved', 'rejected', 'all'].map(s => (
                 <button 
                   key={s}
                   onClick={() => setFilter(s)}
-                  className={`btn btn-sm ${filter === s ? 'btn-danger' : 'btn-outline-danger'}`}
+                  className={`btn btn-sm flex-grow-1 flex-md-grow-0 ${filter === s ? 'btn-danger' : 'btn-outline-danger'}`}
+                  style={{ minWidth: '80px' }}
                 >
                   {s === 'pending' ? 'Chờ duyệt' : s === 'approved' ? 'Đã duyệt' : s === 'rejected' ? 'Đã từ chối' : 'Tất cả'}
                 </button>
@@ -194,11 +195,11 @@ const RechargeManagement = () => {
         </div>
       </div>
 
-      <div className="table-responsive">
-        <table className="table tet-table align-middle">
+      <div className="table-responsive tet-scroll-custom">
+        <table className="table tet-table align-middle" style={{ minWidth: '800px' }}>
           <thead>
             <tr>
-              <th>Thời gian</th>
+              <th style={{ width: '150px' }}>Thời gian</th>
               <th>Người chơi</th>
               <th>Số tiền</th>
               <th>Hình thức</th>
@@ -214,29 +215,29 @@ const RechargeManagement = () => {
               <tr><td colSpan="7" className="text-center py-5 text-muted">Không có yêu cầu nào.</td></tr>
             ) : filteredRecharges.map(r => (
               <tr key={r.id}>
-                <td>
-                  <div className="small text-muted d-flex align-items-center"><BiTime className="me-1" />{new Date(r.created_at).toLocaleString()}</div>
+                <td className="text-nowrap">
+                  <div className="small text-muted d-flex align-items-center"><BiTime className="me-1" />{new Date(r.created_at).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' })}</div>
                 </td>
                 <td><span className="fw-bold">{r.user_profile?.username}</span></td>
                 <td><span className="text-danger fw-bold">{r.amount.toLocaleString()} VNĐ</span></td>
                 <td><span className="badge bg-light text-dark text-uppercase">{r.payment_method}</span></td>
                 <td>
                   {r.proof_image ? (
-                    <button onClick={() => setSelectedImage(r.proof_image)} className="btn btn-sm btn-outline-secondary py-0">
+                    <button onClick={() => setSelectedImage(r.proof_image)} className="btn btn-sm btn-outline-secondary py-1 px-2" style={{ fontSize: '0.75rem' }}>
                       <BiImage className="me-1" /> Xem ảnh
                     </button>
                   ) : 'N/A'}
                 </td>
                 <td>
-                  <span className={`badge ${r.status === 'pending' ? 'bg-warning' : r.status === 'approved' ? 'bg-success' : 'bg-danger'}`}>
+                  <span className={`badge ${r.status === 'pending' ? 'bg-warning' : r.status === 'approved' ? 'bg-success' : 'bg-danger'}`} style={{ fontSize: '0.7rem' }}>
                     {r.status === 'pending' ? 'Chờ duyệt' : r.status === 'approved' ? 'Đã duyệt' : 'Đã từ chối'}
                   </span>
                 </td>
                 <td className="text-end">
                   {r.status === 'pending' && (
-                    <div className="d-flex justify-content-end gap-2">
-                      <button onClick={() => handleAction(r, 'approved')} className="btn btn-sm btn-success p-1" title="Duyệt"><BiCheck size={20} /></button>
-                      <button onClick={() => handleAction(r, 'rejected')} className="btn btn-sm btn-danger p-1" title="Từ chối"><BiX size={20} /></button>
+                    <div className="d-flex justify-content-end gap-1">
+                      <button onClick={() => handleAction(r, 'approved')} className="btn btn-sm btn-success p-2" title="Duyệt"><BiCheck size={18} /></button>
+                      <button onClick={() => handleAction(r, 'rejected')} className="btn btn-sm btn-danger p-2" title="Từ chối"><BiX size={18} /></button>
                     </div>
                   )}
                 </td>

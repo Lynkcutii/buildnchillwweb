@@ -329,74 +329,78 @@ const ShopOrdersManagement = () => {
         </div>
       </div>
 
-      <div className="admin-table">
-        <table className="table">
+      <div className="table-responsive tet-scroll-custom">
+        <table className="table tet-table align-middle">
           <thead>
             <tr>
-              <th>ID</th>
+              <th style={{ width: '100px' }}>Mã ĐH</th>
               <th>Người Chơi</th>
               <th>Sản Phẩm</th>
               <th>Giá</th>
               <th>Trạng Thái</th>
-              <th>Ngày Tạo</th>
-              <th>Thao Tác</th>
+              <th style={{ width: '150px' }}>Ngày Tạo</th>
+              <th className="text-end">Thao Tác</th>
             </tr>
           </thead>
           <tbody>
             {orders.map(order => (
               <tr key={order.id}>
-                <td style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--tet-lucky-red)' }}>{generateOrderCode(order.id)}</td>
-                <td>{order.mc_username}</td>
-                <td>{order.product || order.products?.name}</td>
-                <td>{order.price?.toLocaleString('vi-VN')} VNĐ</td>
+                <td style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--tet-lucky-red)' }}>{generateOrderCode(order.id)}</td>
+                <td className="fw-bold">{order.mc_username}</td>
+                <td><span className="text-truncate d-inline-block" style={{ maxWidth: '150px' }}>{order.product || order.products?.name}</span></td>
+                <td className="text-danger fw-bold">{order.price?.toLocaleString('vi-VN')} VNĐ</td>
                 <td>{getStatusBadge(order)}</td>
-                <td>{new Date(order.created_at).toLocaleString('vi-VN')}</td>
+                <td style={{ fontSize: '0.8rem' }}>{new Date(order.created_at).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' })}</td>
                 <td>
-                  <div className="d-flex gap-2">
+                  <div className="d-flex justify-content-end gap-1">
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="tet-button-save btn-sm"
+                      className="btn btn-sm btn-success p-2"
                       onClick={() => handleViewOrder(order)}
                       title="Chi tiết đơn hàng"
                     >
-                      <BiShow size={18} /> Xem
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="tet-button-danger btn-sm"
-                      onClick={() => handleDeleteOrder(order.id, order.notes)}
-                      title="Xóa đơn hàng"
-                    >
-                      <BiTrash size={18} /> Xóa
+                      <BiShow size={18} />
                     </motion.button>
                     {order.status === 'pending' && (
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="tet-button-save btn-sm"
+                        className="btn btn-sm btn-danger p-2"
                         onClick={() => handleUpdateStatus(order.id, 'paid')}
-                        style={{ padding: '5px 12px', fontSize: '0.8rem' }}
+                        title="Xác nhận thanh toán & giao đồ"
                       >
-                        <BiCheckCircle className="me-1" /> TT & Giao
+                        <BiCheckCircle size={18} />
                       </motion.button>
                     )}
                     {order.status === 'paid' && (
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="tet-button-save btn-sm"
+                        className="btn btn-sm btn-info p-2"
                         onClick={() => handleUpdateStatus(order.id, 'delivered')}
-                        style={{ background: '#10b981', padding: '5px 12px', fontSize: '0.8rem' }}
+                        style={{ background: '#10b981', borderColor: '#10b981', color: 'white' }}
+                        title="Xác nhận đã giao"
                       >
-                        <BiCheckCircle className="me-1" /> Giao xong
+                        <BiCheckCircle size={18} />
                       </motion.button>
                     )}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="btn btn-sm btn-outline-danger p-2"
+                      onClick={() => handleDeleteOrder(order.id, order.notes)}
+                      title="Xóa đơn hàng"
+                    >
+                      <BiTrash size={18} />
+                    </motion.button>
                   </div>
                 </td>
               </tr>
             ))}
+            {orders.length === 0 && (
+              <tr><td colSpan="7" className="text-center py-5 text-muted">Không có đơn hàng nào.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
