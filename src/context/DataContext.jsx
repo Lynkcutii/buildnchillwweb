@@ -122,10 +122,17 @@ export const DataProvider = ({ children }) => {
       const newsPromise = supabase.from('news').select('*').eq('is_deleted', false).order('date', { ascending: false });
       const settingsPromise = supabase.from('site_settings').select('*').eq('id', 1).maybeSingle();
       const statusPromise = supabase.from('server_status').select('*').eq('id', 1).maybeSingle();
+      const contactsPromise = supabase.from('contacts').select('*').eq('is_deleted', false).order('created_at', { ascending: false });
 
-      const [newsRes, settingsRes, statusRes] = await Promise.all([newsPromise, settingsPromise, statusPromise]);
+      const [newsRes, settingsRes, statusRes, contactsRes] = await Promise.all([
+        newsPromise, 
+        settingsPromise, 
+        statusPromise,
+        contactsPromise
+      ]);
 
       if (newsRes.data) setNews(newsRes.data.map(item => ({ ...item, slug: item.slug || slugify(item.title) })));
+      if (contactsRes.data) setContacts(contactsRes.data);
       if (settingsRes.data) {
         setSiteSettings(settingsRes.data);
         // Sau khi có settings (đặc biệt là server_ip), thử cập nhật trạng thái thực tế
@@ -173,6 +180,192 @@ export const DataProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error fetching Minecraft status:', error);
+    }
+  };
+
+  // News Management
+  const addNews = async (newsData) => {
+    try {
+      const { data, error } = await supabase
+        .from('news')
+        .insert([{
+          ...newsData,
+          slug: slugify(newsData.title),
+          is_deleted: false
+        }])
+        .select();
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error adding news:', error);
+      return false;
+    }
+  };
+
+  const updateNews = async (id, newsData) => {
+    try {
+      const { error } = await supabase
+        .from('news')
+        .update({
+          ...newsData,
+          slug: slugify(newsData.title)
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error updating news:', error);
+      return false;
+    }
+  };
+
+  const deleteNews = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('news')
+        .update({ is_deleted: true })
+        .eq('id', id);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error deleting news:', error);
+      return false;
+    }
+  };
+
+  // Admin Tools
+  const updateServerStatus = async (statusData) => {
+    try {
+      const { error } = await supabase
+        .from('server_status')
+        .update({
+          status: statusData.status,
+          players: statusData.players,
+          max_players: statusData.maxPlayers,
+          version: statusData.version
+        })
+        .eq('id', 1);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error updating server status:', error);
+      return false;
+    }
+  };
+
+  const updateSiteSettings = async (settingsData) => {
+    try {
+      const { error } = await supabase
+        .from('site_settings')
+        .update(settingsData)
+        .eq('id', 1);
+
+      if (error) throw error;
+      setSiteSettings(settingsData);
+      return true;
+    } catch (error) {
+      console.error('Error updating site settings:', error);
+      return false;
+    }
+  };
+
+  // Contact Management
+  const markContactAsRead = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .update({ read: true })
+        .eq('id', id);
+
+      if (error) throw error;
+      setContacts(prev => prev.map(c => c.id === id ? { ...c, read: true } : c));
+      return true;
+    } catch (error) {
+      console.error('Error marking contact as read:', error);
+      return false;
+    }
+  };
+
+  const updateContactStatus = async (id, status) => {
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .update({ status })
+        .eq('id', id);
+
+      if (error) throw error;
+      setContacts(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+      return true;
+    } catch (error) {
+      console.error('Error updating contact status:', error);
+      return false;
+    }
+  };
+
+  const deleteContact = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .update({ is_deleted: true })
+        .eq('id', id);
+
+      if (error) throw error;
+      setContacts(prev => prev.filter(c => c.id !== id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting contact:', error);
+      return false;
+    }
+  };
+
+  const submitContact = async (contactData) => {
+    try {
+      let image_url = null;
+      
+      // Handle image upload if exists
+      if (contactData.image) {
+        const file = contactData.image;
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+        const filePath = fileName;
+
+        const { error: uploadError } = await supabase.storage
+          .from('contact-images')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('contact-images')
+          .getPublicUrl(filePath);
+          
+        image_url = publicUrl;
+      }
+
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert([{
+          ign: contactData.ign,
+          email: contactData.email,
+          phone: contactData.phone,
+          category: contactData.category,
+          message: contactData.message,
+          image_url: image_url,
+          status: 'pending',
+          read: false,
+          is_deleted: false
+        }])
+        .select();
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error submitting contact:', error);
+      throw error;
     }
   };
 
@@ -241,6 +434,12 @@ export const DataProvider = ({ children }) => {
       }
     }).subscribe();
 
+    const contactChannel = supabase.channel('contact_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'contacts' }, () => {
+      supabase.from('contacts').select('*').eq('is_deleted', false).order('created_at', { ascending: false }).then(({ data }) => {
+        if (data) setContacts(data);
+      });
+    }).subscribe();
+
     const walletChannel = supabase.channel('wallet_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'wallets' }, (payload) => {
       // Cập nhật profile nếu là ví của user hiện tại
       const currentUserId = user?.id;
@@ -267,6 +466,7 @@ export const DataProvider = ({ children }) => {
       if (statusInterval) clearInterval(statusInterval);
       supabase.removeChannel(newsChannel);
       supabase.removeChannel(statusChannel);
+      supabase.removeChannel(contactChannel);
       supabase.removeChannel(walletChannel);
       supabase.removeChannel(rechargeChannel);
       supabase.removeChannel(orderChannel);
@@ -277,7 +477,9 @@ export const DataProvider = ({ children }) => {
     <DataContext.Provider value={{
       news, serverStatus, contacts, siteSettings,
       isAuthenticated, user, userProfile, loading,
-      fetchUserProfile, login, register, logout, refreshMinecraftStatus
+      fetchUserProfile, login, register, logout, refreshMinecraftStatus,
+      addNews, updateNews, deleteNews, updateServerStatus, updateSiteSettings,
+      markContactAsRead, updateContactStatus, deleteContact, submitContact
     }}>
       {children}
     </DataContext.Provider>
