@@ -9,6 +9,8 @@ import TetEffect from '../components/TetEffect';
 import ShopCategoriesManagement from '../components/ShopCategoriesManagement';
 import ShopProductsManagement from '../components/ShopProductsManagement';
 import ShopOrdersManagement from '../components/ShopOrdersManagement';
+import WalletManagement from '../components/WalletManagement';
+import RechargeManagement from '../components/RechargeManagement';
 import TetDatePicker from '../components/TetDatePicker';
 import '../styles/tet-theme.css';
 import '../styles/shop-tet.css';
@@ -29,7 +31,9 @@ import {
   BiShoppingBag,
   BiShow,
   BiCalendar,
-  BiStar
+  BiStar,
+  BiWallet,
+  BiCreditCard
 } from 'react-icons/bi';
 
 const Admin = () => {
@@ -40,7 +44,9 @@ const Admin = () => {
     contacts,
     siteSettings,
     isAuthenticated,
+    userProfile,
     logout,
+    refreshMinecraftStatus,
     addNews,
     updateNews,
     deleteNews,
@@ -95,25 +101,23 @@ const Admin = () => {
     topProducts: [],
     topDonators: [],
     recentOrders: [],
-    recentContacts: []
+    recentContacts: [],
+    pendingRecharges: 0
   });
 
   const loadDashboardStats = async () => {
     try {
-      const { data: allOrders, error } = await supabase
-        .from('orders')
-        .select('id, created_at, price, status, delivered, product, mc_username, products(name)')
-        .eq('is_deleted', false)
-        .order('created_at', { ascending: false });
+      const [
+        { data: allOrders },
+        { data: recentContacts },
+        { data: pendingRechargesData }
+      ] = await Promise.all([
+        supabase.from('orders').select('id, created_at, price, status, delivered, product, mc_username, products(name)').eq('is_deleted', false).order('created_at', { ascending: false }),
+        supabase.from('contacts').select('*').eq('is_deleted', false).order('created_at', { ascending: false }).limit(5),
+        supabase.from('recharges').select('id', { count: 'exact' }).eq('status', 'pending')
+      ]);
 
-      if (error) throw error;
-
-      const { data: recentContacts, error: contactsError } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('is_deleted', false)
-        .order('created_at', { ascending: false })
-        .limit(5);
+      const pendingRechargesCount = pendingRechargesData?.length || 0;
 
       const now = new Date();
       const currentMonth = now.getMonth();
@@ -205,7 +209,7 @@ const Admin = () => {
           lastTotal = user.total;
         }
         return { ...user, rank: currentRank };
-      }).slice(0, 5);
+      }).filter(u => u.rank <= 5);
 
       setStats({
         pendingOrders: pending,
@@ -223,7 +227,8 @@ const Admin = () => {
           customer_ign: o.mc_username,
           product_name: o.product || o.products?.name || 'Sản phẩm'
         })),
-        recentContacts: recentContacts || []
+        recentContacts: recentContacts || [],
+        pendingRecharges: pendingRechargesCount
       });
     } catch (error) {
       console.error('Error loading dashboard stats:', error);
@@ -235,6 +240,14 @@ const Admin = () => {
       navigate('/login');
       return;
     }
+    
+    // Kiểm tra quyền admin
+    if (userProfile && userProfile.role !== 'admin') {
+      alert('Bạn không có quyền truy cập trang quản trị!');
+      navigate('/shop');
+      return;
+    }
+
     loadDashboardStats();
     setServerForm({
       status: serverStatus?.status || 'Online',
@@ -415,6 +428,8 @@ const Admin = () => {
     { id: 'categories', label: 'Danh Mục', icon: BiCog },
     { id: 'products', label: 'Sản Phẩm', icon: BiShoppingBag },
     { id: 'orders', label: 'Đơn Hàng', icon: BiCheckCircle },
+    { id: 'recharges', label: 'Duyệt Nạp', icon: BiCreditCard },
+    { id: 'wallets', label: 'Quản Lý Ví', icon: BiWallet },
     { id: 'news', label: 'Tin Tức', icon: BiNews },
     { id: 'contacts', label: 'Liên Hệ', icon: BiEnvelope },
     { id: 'server', label: 'Trạng Thái Server', icon: BiServer },
@@ -434,6 +449,7 @@ const Admin = () => {
             let notificationCount = 0;
             if (tab.id === 'contacts') notificationCount = unresolvedContactsCount;
             if (tab.id === 'orders') notificationCount = undeliveredOrdersCount;
+            if (tab.id === 'recharges') notificationCount = stats.pendingRecharges;
             const hasNotification = notificationCount > 0;
 
             return (
@@ -775,6 +791,8 @@ const Admin = () => {
             {activeTab === 'categories' && <motion.div key="categories" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}><ShopCategoriesManagement /></motion.div>}
             {activeTab === 'products' && <motion.div key="products" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}><ShopProductsManagement /></motion.div>}
             {activeTab === 'orders' && <motion.div key="orders" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}><ShopOrdersManagement /></motion.div>}
+            {activeTab === 'recharges' && <motion.div key="recharges" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}><RechargeManagement /></motion.div>}
+            {activeTab === 'wallets' && <motion.div key="wallets" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}><WalletManagement /></motion.div>}
 
             {activeTab === 'contacts' && (
               <motion.div key="contacts" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
@@ -873,7 +891,20 @@ const Admin = () => {
 
             {activeTab === 'server' && (
               <motion.div key="server" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                <h1 className="tet-section-title mb-4">Trạng Thái Server</h1>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                  <h1 className="tet-section-title" style={{ margin: 0 }}>Trạng Thái Server</h1>
+                  <motion.button 
+                    className="tet-button-outline"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      refreshMinecraftStatus();
+                      alert('Đang làm mới trạng thái từ Minecraft server...');
+                    }}
+                  >
+                    <BiServer className="me-2" /> Làm mới tự động (API)
+                  </motion.button>
+                </div>
                 <div className="admin-card tet-glass p-4">
                   <div className="row">
                     <div className="col-md-6 mb-3">

@@ -1,7 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { BiShoppingBag, BiUser, BiCheckCircle, BiXCircle, BiGift, BiQrScan, BiCreditCard, BiStar, BiCalendar } from 'react-icons/bi';
+import { 
+  BiShoppingBag, 
+  BiUser, 
+  BiCheckCircle, 
+  BiXCircle, 
+  BiGift, 
+  BiQrScan, 
+  BiCreditCard, 
+  BiStar, 
+  BiCalendar, 
+  BiWallet,
+  BiInfoCircle,
+  BiHistory
+} from 'react-icons/bi';
 import { supabase } from '../supabaseClient';
 import TetEffect from '../components/TetEffect';
 import TetDatePicker from '../components/TetDatePicker';
@@ -42,16 +55,16 @@ const Shop = () => {
     if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('Thay bằng URL thật')) return null;
 
     try {
-      const isSuccess = customTitle === 'THANH TOÁN THÀNH CÔNG';
+      const isSuccess = customTitle?.includes('THÀNH CÔNG') || customTitle?.includes('TỰ ĐỘNG');
       const embed = {
         title: `🛒 ${customTitle || 'ĐƠN HÀNG MỚI'}`,
-        description: `🔔 <@741299302495813662> ${isSuccess ? 'Người chơi đã xác nhận đã thanh toán xong! Admin vui lòng kiểm tra ngân hàng.' : 'Có một đơn hàng mới vừa được khởi tạo trên hệ thống!'}`,
-        color: 16766720,
+        description: `🔔 <@741299302495813662> ${isSuccess ? 'Đơn hàng đã được xác nhận thanh toán và giao quà!' : 'Có một đơn hàng mới vừa được khởi tạo trên hệ thống!'}`,
+        color: isSuccess ? 3066993 : 16766720,
         fields: [
           { name: '👤 Người chơi', value: order.mc_username || 'Không rõ', inline: true },
           { name: '📦 Sản phẩm', value: order.product || 'Không rõ', inline: true },
           { name: '💰 Giá tiền', value: `${Number(order.price || 0).toLocaleString('vi-VN')} VNĐ`, inline: true },
-          { name: '💳 Thanh toán', value: order.payment_method === 'qr' ? 'QR Code' : 'Chuyển Khoản', inline: true },
+          { name: '💳 Thanh toán', value: order.payment_method === 'qr' ? 'QR Code' : order.payment_method === 'wallet' ? 'Ví Nội Bộ' : 'Chuyển Khoản', inline: true },
           { name: '🆔 Mã đơn hàng', value: `\`${order.id || 'N/A'}\`` },
           { name: '📜 Lệnh thực thi', value: `\`${order.command || 'N/A'}\`` }
         ],
@@ -83,7 +96,25 @@ const Shop = () => {
     loadCategories();
     loadProducts();
     loadTopDonators();
+    checkUser();
+
+    const handleUpdate = () => {
+      loadTopDonators();
+    };
+
+    window.addEventListener('orders_updated', handleUpdate);
+    return () => window.removeEventListener('orders_updated', handleUpdate);
   }, [dateRange]);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+      if (profile) {
+        setFormData(prev => ({ ...prev, mc_username: profile.username }));
+      }
+    }
+  };
 
   const loadTopDonators = async () => {
     setLoadingTop(true);
@@ -123,10 +154,9 @@ const Shop = () => {
           lastTotal = user.total;
         }
         return { ...user, rank: currentRank };
-      }).slice(0, 10); // Lấy top 10 để hiển thị được nhiều hơn nếu có đồng hạng, hoặc vẫn giữ 5 tùy ý. 
-      // User yêu cầu top 4-5 nên tôi sẽ lấy ít nhất 5.
+      });
 
-      setTopDonators(ranked.slice(0, 5));
+      setTopDonators(ranked.filter(u => u.rank <= 5));
     } catch (error) {
       console.error('Error loading top donators:', error);
     } finally {
@@ -228,7 +258,64 @@ const Shop = () => {
         return;
       }
 
-      // Tạo đối tượng đơn hàng tạm thời (chưa lưu vào database)
+      if (formData.payment_method === 'wallet') {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setMessage({ type: 'error', text: 'Vui lòng đăng nhập để thanh toán qua ví!' });
+          setSubmitting(false);
+          return;
+        }
+
+        const { data: result, error: rpcError } = await supabase.rpc('process_wallet_purchase', {
+          p_user_id: user.id,
+          p_product_id: product.id,
+          p_mc_username: formData.mc_username.trim()
+        });
+
+        if (rpcError) throw rpcError;
+        if (!result.success) {
+          const isLowBalance = result.message?.toLowerCase().includes('insufficient balance');
+          setMessage({ 
+            type: 'error', 
+            text: isLowBalance ? (
+              <span>Số dư không đủ! <a href="/recharge" className="text-decoration-underline fw-bold" style={{ color: 'inherit' }}>Nạp thêm tại đây</a></span>
+            ) : (result.message || 'Thanh toán thất bại!')
+          });
+          setSubmitting(false);
+          return;
+        }
+
+        // Gửi thông báo Discord cho việc mua bằng ví (Tự động)
+        // Lấy thông tin đơn hàng vừa tạo để gửi Discord
+        const { data: orderData, error: fetchOrderError } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('id', result.order_id)
+          .single();
+        
+        if (orderData) {
+          await sendDiscordNotification(orderData, 'THANH TOÁN VÍ NỘI BỘ (TỰ ĐỘNG)');
+        } else {
+          console.error('Could not fetch order data for Discord notification:', fetchOrderError);
+          // Fallback nếu không fetch được order data (có thể do RLS lag)
+          const fallbackOrder = {
+            id: result.order_id,
+            mc_username: formData.mc_username.trim(),
+            product: product.name,
+            price: product.price,
+            payment_method: 'wallet',
+            command: product.command.replace('{username}', formData.mc_username.trim()).replace('{user_name}', formData.mc_username.trim())
+          };
+          await sendDiscordNotification(fallbackOrder, 'THANH TOÁN VÍ NỘI BỘ (TỰ ĐỘNG)');
+        }
+
+        setShowSuccess(true);
+        setFormData({ mc_username: formData.mc_username, product_id: '', payment_method: 'wallet' });
+        setSelectedProduct(null);
+        return;
+      }
+
+      // Tạo đối tượng đơn hàng tạm thời (cho bank/qr)
       // Sử dụng crypto.randomUUID() để tạo ID duy nhất cho nội dung thanh toán
       const tempId = crypto.randomUUID();
       const newOrder = {
@@ -509,8 +596,8 @@ const Shop = () => {
           </AnimatePresence>
 
           <div className="row g-4">
-            <div className="col-lg-2 mb-4">
-              <div className="tet-glass p-3 sticky-top" style={{ top: '100px', zIndex: 10 }}>
+            <div className="col-lg-2 order-1 order-lg-1 mb-4">
+              <div className="tet-glass p-3 sticky-top" style={{ top: '100px', zIndex: 5 }}>
                 <h5 className="tet-section-title mb-4" style={{ fontSize: '1.2rem' }}>
                   Danh Mục
                 </h5>
@@ -530,7 +617,7 @@ const Shop = () => {
               </div>
             </div>
 
-            <div className="col-lg-7">
+            <div className="col-lg-7 order-3 order-lg-2">
               <div className="row g-4 mb-5">
                 {filteredProducts.map(product => (
                   <div key={product.id} className="col-md-6">
@@ -624,7 +711,7 @@ const Shop = () => {
                       <div className="mb-4">
                         <label className="tet-label">Phương Thức Thanh Toán:</label>
                         <div className="row g-3">
-                          <div className="col-md-6">
+                          <div className="col-md-4">
                             <motion.div
                               className={`tet-card p-4 text-center cursor-pointer h-100 d-flex flex-column align-items-center justify-content-center ${formData.payment_method === 'qr' ? 'selected' : ''}`}
                               onClick={() => setFormData({ ...formData, payment_method: 'qr' })}
@@ -632,10 +719,10 @@ const Shop = () => {
                               whileTap={{ scale: 0.98 }}
                             >
                               <BiQrScan size={40} className="mb-2" style={{ color: formData.payment_method === 'qr' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }} />
-                              <div style={{ fontWeight: 700, fontSize: '1rem', color: formData.payment_method === 'qr' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }}>Mã QR (Tự động)</div>
+                              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: formData.payment_method === 'qr' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }}>Mã QR (Tự động)</div>
                             </motion.div>
                           </div>
-                          <div className="col-md-6">
+                          <div className="col-md-4">
                             <motion.div
                               className={`tet-card p-4 text-center cursor-pointer h-100 d-flex flex-column align-items-center justify-content-center ${formData.payment_method === 'bank' ? 'selected' : ''}`}
                               onClick={() => setFormData({ ...formData, payment_method: 'bank' })}
@@ -643,7 +730,18 @@ const Shop = () => {
                               whileTap={{ scale: 0.98 }}
                             >
                               <BiCreditCard size={40} className="mb-2" style={{ color: formData.payment_method === 'bank' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }} />
-                              <div style={{ fontWeight: 700, fontSize: '1rem', color: formData.payment_method === 'bank' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }}>Chuyển Khoản Thủ Công</div>
+                              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: formData.payment_method === 'bank' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }}>Chuyển Khoản</div>
+                            </motion.div>
+                          </div>
+                          <div className="col-md-4">
+                            <motion.div
+                              className={`tet-card p-4 text-center cursor-pointer h-100 d-flex flex-column align-items-center justify-content-center ${formData.payment_method === 'wallet' ? 'selected' : ''}`}
+                              onClick={() => setFormData({ ...formData, payment_method: 'wallet' })}
+                              whileHover={{ y: -5 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <BiWallet size={40} className="mb-2" style={{ color: formData.payment_method === 'wallet' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }} />
+                              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: formData.payment_method === 'wallet' ? 'var(--tet-lucky-red)' : 'var(--tet-lucky-red-dark)' }}>Ví Nội Bộ</div>
                             </motion.div>
                           </div>
                         </div>
@@ -674,8 +772,8 @@ const Shop = () => {
               </div>
             </div>
 
-            <div className="col-lg-3">
-              <div className="tet-glass p-4 sticky-top" style={{ top: '100px', overflow: 'visible' }}>
+            <div className="col-lg-3 order-2 order-lg-3">
+              <div className="tet-glass p-4 sticky-top" style={{ top: '100px', overflow: 'visible', zIndex: 5 }}>
                 <h4 className="tet-section-title mb-3" style={{ color: 'var(--tet-gold-dark)' }}>
                   <BiStar /> Top Nạp
                 </h4>
@@ -693,7 +791,7 @@ const Shop = () => {
                   />
                 </div>
 
-                <div className="list-unstyled d-flex flex-column gap-3">
+                <div className="list-unstyled d-flex flex-column gap-3 top-nap-list">
                   {loadingTop ? (
                     <div className="text-center py-5">
                       <div className="spinner-border text-danger spinner-border-sm" role="status"></div>

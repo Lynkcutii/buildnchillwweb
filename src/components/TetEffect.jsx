@@ -271,14 +271,13 @@ const TetEffect = () => {
     }
 
     // --- 6. LOOP ---
-    for (let i = 0; i < 15; i++) blossoms.push(new Blossom());
+    for (let i = 0; i < 3; i++) blossoms.push(new Blossom());
 
     function loop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // [KEY] GIẢM TẦN SUẤT BẮN XUỐNG CỰC THẤP
-      // 0.0015 = Khoảng 10-15 giây mới bắn 1 quả
-      if (Math.random() < 0.0015) {
+      // [KEY] TẦN SUẤT BẮN VỪA PHẢI
+      if (Math.random() < 0.0003) {
         fireworks.push(new Firework());
       }
 

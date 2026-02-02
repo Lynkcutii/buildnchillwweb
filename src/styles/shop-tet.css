@@ -644,52 +644,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+  border-left: 4px solid transparent !important;
 }
 
 .rank-item:hover {
-  transform: translateX(-5px);
+  transform: translateX(5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
-.rank-item.top-1 {
-  background: linear-gradient(135deg, #fffcf0 0%, #fff8dc 100%);
-  border: 1px solid var(--tet-gold);
-  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2);
-}
+.rank-item.top-1 { border-left-color: #ffd700 !important; background: linear-gradient(90deg, #fff9e6 0%, white 100%); }
+.rank-item.top-2 { border-left-color: #c0c0c0 !important; background: linear-gradient(90deg, #f2f2f2 0%, white 100%); }
+.rank-item.top-3 { border-left-color: #cd7f32 !important; background: linear-gradient(90deg, #fff0e6 0%, white 100%); }
+.rank-item.top-4 { border-left-color: #2ecc71 !important; background: linear-gradient(90deg, #eafaf1 0%, white 100%); }
+.rank-item.top-5 { border-left-color: #ff9a9e !important; background: linear-gradient(90deg, #fff1f2 0%, white 100%); }
 
-.rank-item.top-2 {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid #ced4da;
-}
-
-.rank-item.top-3 {
-  background: linear-gradient(135deg, #fff5f2 0%, #ffe8e0 100%);
-  border: 1px solid #ffccbc;
-}
-
-.rank-item.top-4 {
-  background: linear-gradient(135deg, #f0fff4 0%, #dcffe4 100%);
-  border: 1px solid #c6f6d5;
-}
-
-.rank-item.top-5 {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: 1px solid #bae6fd;
-}
+.rank-item.top-1 .rank-badge { background: #ffd700; color: #7a5d00; opacity: 1; }
+.rank-item.top-2 .rank-badge { background: #c0c0c0; color: #444; opacity: 1; }
+.rank-item.top-3 .rank-badge { background: #cd7f32; color: #fff; opacity: 1; }
+.rank-item.top-4 .rank-badge { background: #2ecc71; color: #fff; opacity: 1; }
+.rank-item.top-5 .rank-badge { background: #ff9a9e; color: #fff; opacity: 1; }
 
 .rank-badge {
-  width: 20px;
-  font-size: 0.7rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
   font-weight: 900;
   color: var(--tet-text-charcoal);
-  opacity: 0.5;
+  margin-right: 12px;
+  flex-shrink: 0;
 }
-
-.top-1 .rank-badge { color: var(--tet-gold-dark); opacity: 1; }
-.top-2 .rank-badge { color: #6c757d; opacity: 1; }
-.top-3 .rank-badge { color: #d84315; opacity: 1; }
-.top-4 .rank-badge { color: #2f855a; opacity: 1; }
-.top-5 .rank-badge { color: #0284c7; opacity: 1; }
 
 .player-avatar img {
   width: 40px;
@@ -699,22 +686,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.top-1 .player-avatar img { border-color: var(--tet-gold); }
+.top-1 .player-avatar img { border-color: #ffd700; }
+.top-2 .player-avatar img { border-color: #c0c0c0; }
+.top-3 .player-avatar img { border-color: #cd7f32; }
 
 .player-name {
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--tet-text-dark);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #333;
 }
 
 .recharge-amount {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 800;
   color: var(--tet-lucky-red);
 }
 
 .medal-icon {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-left: 5px;
 }
 
@@ -723,23 +712,45 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   backdrop-filter: blur(5px);
 }
 
+.top-nap-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tet-lucky-red-light) transparent;
+}
+
+.top-nap-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.top-nap-list::-webkit-scrollbar-thumb {
+  background: var(--tet-lucky-red-light);
+  border-radius: 10px;
+}
+
 @media (max-width: 991.98px) {
   .tet-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
   
   .tet-title::after, .tet-title::before {
     display: none;
   }
 
-  /* Order columns on mobile */
   .shop-tet-container .row {
     display: flex;
     flex-direction: column;
   }
   
-  .shop-tet-container .col-lg-7 { order: 1; }
+  .shop-tet-container .col-lg-2 { order: 1; }
   .shop-tet-container .col-lg-3 { order: 2; }
-  .shop-tet-container .col-lg-2 { order: 3; }
+  .shop-tet-container .col-lg-7 { order: 3; }
+  
+  .tet-glass.sticky-top {
+    position: relative !important;
+    top: 0 !important;
+    margin-bottom: 1.5rem;
+  }
 }
 

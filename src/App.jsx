@@ -13,8 +13,10 @@ import News from './pages/News';
 import NewsDetail from './pages/NewsDetail';
 import Contact from './pages/Contact';
 import Shop from './pages/Shop';
+import Recharge from './pages/Recharge';
 import Admin from './pages/Admin';
-import Login from './pages/Login';
+import Auth from './pages/Auth';
+import Profile from './pages/Profile';
 import TetEffect from './components/TetEffect';
 import 'react-quill/dist/quill.snow.css';
 import './styles.css';
@@ -129,6 +131,34 @@ const AppContent = () => {
             }
           />
           <Route
+            path="/recharge"
+            element={
+              <motion.div
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <Recharge />
+              </motion.div>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <motion.div
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <Profile />
+              </motion.div>
+            }
+          />
+          <Route
             path="/login"
             element={
               isAuthenticated ? (
@@ -141,7 +171,7 @@ const AppContent = () => {
                   variants={pageVariants}
                   transition={pageTransition}
                 >
-                  <Login />
+                  <Auth />
                 </motion.div>
               )
             }

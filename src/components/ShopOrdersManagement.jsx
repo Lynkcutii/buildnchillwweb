@@ -14,6 +14,13 @@ const ShopOrdersManagement = () => {
 
   useEffect(() => {
     loadOrders();
+
+    const handleUpdate = () => {
+      loadOrders();
+    };
+
+    window.addEventListener('orders_updated', handleUpdate);
+    return () => window.removeEventListener('orders_updated', handleUpdate);
   }, [filter]);
 
   const loadOrders = async () => {
